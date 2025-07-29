@@ -1,277 +1,166 @@
-<!DOCTYPE html>
-<html lang="de">
+<!DOCTYPE html><html lang="de">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Frakta Scroll mit Hintergrund-Interaktion</title>
-<style>
-  /* Reset */
-  * {
-    margin: 0; padding: 0; box-sizing: border-box;
-  }
-  html, body {
-    height: 100%;
-    font-family: Arial, sans-serif;
-    background: black;
-    overflow-y: auto; /* Body scrollbar */
-  }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Frakta Scrollseite</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }html, body {
+  height: 100%;
+  font-family: sans-serif;
+  overflow-y: scroll;
+  background: black;
+}
 
-  /* Hintergrund-iframe fixiert unter allem */
-  .background-iframe {
-    position: fixed;
-    top: 0; left: 0;
-    width: 100vw; height: 100vh;
-    border: none;
-    z-index: 0;
-    pointer-events: auto; /* Interaktion mit Hintergrund */
-  }
+/* Hintergrund */
+.background {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 0;
+  pointer-events: auto;
+}
 
-  /* Scroll Container ist nur Wrapper */
-  .scroll-container {
-    position: relative;
-    z-index: 1;
-    width: 100vw;
-    padding-bottom: 50vh; /* Platz unten, kann angepasst werden */
-  }
+.background iframe {
+  width: 100%;
+  height: 100%;
+  border: none;
+}
 
-  /* Vollbild-Block, nimmt min Höhe, Content unten */
-  .content-block {
-    width: 100vw;
-    min-height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: flex-end;
-    position: relative;
-  }
+/* Content Wrapper */
+.slide {
+  height: 100vh;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  position: relative;
+  z-index: 1;
+}
 
-  /* Blur Container volle Breite, aber max-height mit scroll */
-  .blur-container {
-    position: relative;
-    width: 100vw;
-    max-height: 50vh; /* Max 50% vom Viewport hoch */
-    padding: 2rem 3rem;
-    background: rgba(255 255 255 / 0.12);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    color: white;
-    box-sizing: border-box;
+.blur-box {
+  width: 100%;
+  max-width: 900px;
+  margin: 0 auto 2rem auto;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  color: white;
+  padding: 2rem;
+  position: relative;
+  pointer-events: auto;
+}
 
-    overflow-y: auto; /* Scrollbar nur in Content */
-    -webkit-overflow-scrolling: touch;
+/* Fake-Kreuzhalter fuer sichtbarkeit */
+.cross-holder {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+}
 
-    pointer-events: none; /* Standard keine Interaktion */
-  }
+.cross {
+  position: absolute;
+  width: 16px;
+  height: 16px;
+}
 
-  /* Wenn aktiv - pointer-events an */
-  .blur-container.active {
-    pointer-events: auto;
-  }
+.cross::before, .cross::after {
+  content: '';
+  position: absolute;
+  background: white;
+  opacity: 0.3;
+}
 
-  .content-inner {
-    max-width: 900px;
-    margin: 0 auto;
-  }
+.cross::before {
+  width: 100%;
+  height: 1px;
+  top: 50%;
+  left: 0;
+  transform: translateY(-50%);
+}
 
-  h1, h2, p {
-    margin-bottom: 1rem;
-  }
+.cross::after {
+  height: 100%;
+  width: 1px;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+}
 
-  iframe.content-embed {
-    width: 100%;
-    max-height: 300px;
-    border: none;
-    border-radius: 8px;
-    margin-top: 1rem;
-  }
+.top-left    { top: -8px; left: 2rem; }
+.top-right   { top: -8px; right: 2rem; }
+.bottom-left { bottom: -8px; left: 2rem; }
+.bottom-right{ bottom: -8px; right: 2rem; }
 
-  /* Kreuze */
-  .cross {
-    position: absolute;
-    width: 10px;
-    height: 10px;
-  }
-  .cross .line-horizontal,
-  .cross .line-vertical {
-    position: absolute;
-    background: rgba(255 255 255 / 0.3);
-  }
-  .cross .line-horizontal {
-    top: 50%;
-    left: 0;
-    width: 10px;
-    height: 1px;
-    transform: translateY(-50%);
-  }
-  .cross .line-vertical {
-    left: 50%;
-    top: 0;
-    width: 1px;
-    height: 10px;
-    transform: translateX(-50%);
-  }
+h1, h2, p {
+  margin-bottom: 1rem;
+}
 
-  /* Position Kreuze */
-  .cross-top-left {
-    top: 0;
-    left: 48px;
-    transform: translateY(-50%);
-  }
-  .cross-top-right {
-    top: 0;
-    right: 48px;
-    transform: translateY(-50%);
-  }
-  .cross-bottom-left {
-    bottom: 0;
-    left: 48px;
-    transform: translateY(50%);
-  }
-  .cross-bottom-right {
-    bottom: 0;
-    right: 48px;
-    transform: translateY(50%);
-  }
+iframe.embed {
+  width: 100%;
+  height: 300px;
+  border: none;
+  margin-top: 1rem;
+}
 
-  @media (max-width: 600px) {
-    .blur-container {
-      max-height: 60vh;
-      padding: 1.5rem 2rem;
-    }
-    .content-inner {
-      max-width: 100%;
-    }
-    iframe.content-embed {
-      max-height: 180px;
-    }
-    .cross-top-left, .cross-top-right,
-    .cross-bottom-left, .cross-bottom-right {
-      left: 24px !important;
-      right: 24px !important;
-    }
+@media (max-width: 600px) {
+  .blur-box {
+    padding: 1.5rem;
   }
-</style>
+  .top-left, .bottom-left {
+    left: 1rem;
+  }
+  .top-right, .bottom-right {
+    right: 1rem;
+  }
+}
+
+  </style>
 </head>
 <body>
-
-  <!-- Hintergrund -->
-  <iframe class="background-iframe" src="https://paulkimmerl.github.io/frakta/" allowfullscreen></iframe>
-
-  <!-- Scroll Container -->
-  <div class="scroll-container">
-
-    <!-- Block 1 -->
-    <section class="content-block">
-      <div class="blur-container" id="blur1">
-        <div class="cross cross-top-left">
-          <div class="line-horizontal"></div><div class="line-vertical"></div>
-        </div>
-        <div class="cross cross-top-right">
-          <div class="line-horizontal"></div><div class="line-vertical"></div>
-        </div>
-        <div class="cross cross-bottom-left">
-          <div class="line-horizontal"></div><div class="line-vertical"></div>
-        </div>
-        <div class="cross cross-bottom-right">
-          <div class="line-horizontal"></div><div class="line-vertical"></div>
-        </div>
-
-        <div class="content-inner">
-          <h1>Frakta Fullpage Scroll</h1>
-          <p>Scroll im Inhalt aktiviert, sonst kann man mit Hintergrund interagieren.</p>
-          <iframe class="content-embed" src="https://www.youtube.com/embed/dQw4w9WgXcQ" allowfullscreen></iframe>
-        </div>
+  <div class="background">
+    <iframe src="https://paulkimmerl.github.io/frakta/" allowfullscreen></iframe>
+  </div>  <section class="slide">
+    <div class="blur-box">
+      <div class="cross-holder">
+        <div class="cross top-left"></div>
+        <div class="cross top-right"></div>
+        <div class="cross bottom-left"></div>
+        <div class="cross bottom-right"></div>
       </div>
-    </section>
-
-    <!-- Block 2 -->
-    <section class="content-block">
-      <div class="blur-container" id="blur2">
-        <div class="cross cross-top-left">
-          <div class="line-horizontal"></div><div class="line-vertical"></div>
-        </div>
-        <div class="cross cross-top-right">
-          <div class="line-horizontal"></div><div class="line-vertical"></div>
-        </div>
-        <div class="cross cross-bottom-left">
-          <div class="line-horizontal"></div><div class="line-vertical"></div>
-        </div>
-        <div class="cross cross-bottom-right">
-          <div class="line-horizontal"></div><div class="line-vertical"></div>
-        </div>
-
-        <div class="content-inner">
-          <h2>Hintergrund-Interaktion</h2>
-          <p>Wenn du in diesem Bereich scrollst, wird nur hier gescrollt.</p>
-        </div>
+      <h1>Frakta Projekt</h1>
+      <p>Scrollbare Seite mit sichtbarem, interaktivem Hintergrund und Content nur unten.</p>
+      <iframe class="embed" src="https://www.youtube.com/embed/dQw4w9WgXcQ"></iframe>
+    </div>
+  </section>  <section class="slide">
+    <div class="blur-box">
+      <div class="cross-holder">
+        <div class="cross top-left"></div>
+        <div class="cross top-right"></div>
+        <div class="cross bottom-left"></div>
+        <div class="cross bottom-right"></div>
       </div>
-    </section>
-
-    <!-- Block 3 -->
-    <section class="content-block">
-      <div class="blur-container" id="blur3">
-        <div class="cross cross-top-left">
-          <div class="line-horizontal"></div><div class="line-vertical"></div>
-        </div>
-        <div class="cross cross-top-right">
-          <div class="line-horizontal"></div><div class="line-vertical"></div>
-        </div>
-        <div class="cross cross-bottom-left">
-          <div class="line-horizontal"></div><div class="line-vertical"></div>
-        </div>
-        <div class="cross cross-bottom-right">
-          <div class="line-horizontal"></div><div class="line-vertical"></div>
-        </div>
-
-        <div class="content-inner">
-          <h2>Kontakt & Karte</h2>
-          <p>Scroll nur im Inhalt, sonst scrollt der Hintergrund.</p>
-          <iframe class="content-embed" src="https://openstreetmap.org/export/embed.html?bbox=13.4,52.49,13.42,52.5&layer=mapnik" allowfullscreen></iframe>
-        </div>
+      <h2>Hintergrund bleibt sichtbar</h2>
+      <p>Der Blur-Block ist nur so hoch wie der Inhalt.</p>
+    </div>
+  </section>  <section class="slide">
+    <div class="blur-box">
+      <div class="cross-holder">
+        <div class="cross top-left"></div>
+        <div class="cross top-right"></div>
+        <div class="cross bottom-left"></div>
+        <div class="cross bottom-right"></div>
       </div>
-    </section>
-
-  </div>
-
-<script>
-  // Aktiviere pointer-events nur wenn Nutzer im Blur-Container scrollt oder Maus drüber ist
-  const blurContainers = document.querySelectorAll('.blur-container');
-
-  blurContainers.forEach(container => {
-    let isScrolling;
-
-    container.addEventListener('mouseenter', () => {
-      container.classList.add('active');
-    });
-
-    container.addEventListener('mouseleave', () => {
-      // Nach kurzer Zeit pointer-events wieder deaktivieren, falls kein scrollen
-      setTimeout(() => {
-        if (!container.matches(':hover')) {
-          container.classList.remove('active');
-        }
-      }, 200);
-    });
-
-    container.addEventListener('touchstart', () => {
-      container.classList.add('active');
-    });
-
-    container.addEventListener('touchend', () => {
-      setTimeout(() => {
-        container.classList.remove('active');
-      }, 1000);
-    });
-
-    // Während scroll aktiv pointer-events on halten
-    container.addEventListener('scroll', () => {
-      container.classList.add('active');
-      clearTimeout(isScrolling);
-      isScrolling = setTimeout(() => {
-        container.classList.remove('active');
-      }, 500);
-    });
-  });
-</script>
-
+      <h2>Nur eine Box pro Seite</h2>
+      <p>Mehr Raum für den Hintergrund, Interaktion bleibt möglich.</p>
+    </div>
+  </section>
 </body>
 </html>
