@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Frakta Scroll + Scroll-Kreuz</title>
+  <title>Frakta Scroll + Kreuze Position</title>
   <style>
     * {
       margin: 0;
@@ -60,17 +60,20 @@
       z-index: 10;
       height: 80px;
       pointer-events: auto;
+      position: fixed;
     }
 
     header .cross-holder {
       position: absolute;
       width: 100%;
       height: 100%;
-      top: 0;
+      top: auto;
+      bottom: 0;
       left: 0;
       pointer-events: none;
     }
 
+    /* Kreuze (gemeinsam) */
     .cross {
       position: absolute;
       width: 16px;
@@ -100,40 +103,57 @@
       transform: translateX(-50%);
     }
 
-    .bottom-left {
-      bottom: 0;
-      left: 2rem;
+    /* Blur Box Cross Holder */
+    .blur-box .cross-holder {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      top: 0;
+      left: 0;
+      pointer-events: none;
     }
 
-    .bottom-right {
-      bottom: 0;
-      right: 2rem;
+    /* Kreuze Blur Box oben */
+    .cross.top-left {
+      top: 8px;
+      left: 16px;
+    }
+    .cross.top-right {
+      top: 8px;
+      right: 16px;
+    }
+
+    /* Kreuze Blur Box unten */
+    .cross.bottom-left {
+      bottom: 8px;
+      left: 16px;
+    }
+
+    .cross.bottom-right {
+      bottom: 8px;
+      right: 16px;
     }
 
     /* Scroll container */
     .scroll-container {
       position: relative;
       height: 100vh;
-      width: 100vw;
+      width: calc(100vw - 40px); /* Platz für rechte Scroll-Leiste */
       scroll-snap-type: y mandatory;
       overflow-y: scroll;
       overflow-x: hidden;
       scroll-behavior: smooth;
       padding-top: 80px;
       z-index: 5;
-      pointer-events: none; /* deaktiviert Interaktion */
-    }
-
-    /* Ausnahme: Content & rechter Rand & Header */
-    .blur-box, header, .scroll-edge {
       pointer-events: auto;
+      float: left;
     }
 
     /* Slides */
     section.slide {
       scroll-snap-align: end;
       height: calc(100vh - 80px);
-      width: 100vw;
+      width: 100%;
       display: flex;
       align-items: flex-end;
       justify-content: center;
@@ -147,39 +167,49 @@
       background: rgba(255, 255, 255, 0.1);
       backdrop-filter: blur(12px);
       -webkit-backdrop-filter: blur(12px);
-      padding: 2rem;
+      padding: 2rem 16px;
       color: white;
       user-select: text;
       position: relative;
     }
 
-    .blur-box .cross-holder {
-      position: absolute;
-      width: 100%;
-      height: 100%;
-      top: 0;
-      left: 0;
-      pointer-events: none;
+    h1, h2, p {
+      margin-bottom: 1rem;
     }
 
-    /* Scroll-Indikator Linie rechts */
+    /* Scroll Indicator Bereich rechts */
     .scroll-indicator-line {
       position: fixed;
-      top: 0;
-      right: 2rem;
-      width: 1px;
-      height: 100vh;
-      background: rgba(255, 255, 255, 0.2);
+      top: 80px; /* unter Header */
+      right: 0;
+      width: 40px;
+      height: calc(100vh - 80px);
+      background: rgba(255,255,255,0.05);
       z-index: 12;
-      pointer-events: none;
+      pointer-events: auto;
+      cursor: ns-resize;
+      user-select: none;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
     }
 
-    /* Scroll-Indikator Kreuz (ersetzt Punkt) */
+    /* Scroll-Indikator Linie (fein) */
+    .scroll-indicator-line-inner {
+      position: relative;
+      width: 1px;
+      height: 100%;
+      background: rgba(255, 255, 255, 0.2);
+    }
+
+    /* Scroll-Indikator Kreuz */
     .scroll-indicator-cross {
       position: absolute;
       width: 16px;
       height: 16px;
       pointer-events: none;
+      background: transparent;
+      opacity: 0.6;
     }
     .scroll-indicator-cross::before,
     .scroll-indicator-cross::after {
@@ -203,27 +233,16 @@
       transform: translateX(-50%);
     }
 
-    /* Unsichtbarer interaktiver Swipe-Bereich rechts */
-    .scroll-edge {
-      position: fixed;
-      top: 0;
-      right: 0;
-      width: 48px;
-      height: 100%;
-      z-index: 15;
-    }
-
-    h1, h2, p {
-      margin-bottom: 1rem;
-    }
-
     @media (max-width: 600px) {
       .blur-box {
-        padding: 1.5rem;
+        padding: 1.5rem 12px;
       }
-      .bottom-left { left: 1rem; }
-      .bottom-right { right: 1rem; }
-      .scroll-indicator-line { right: 1rem; }
+      .scroll-indicator-line {
+        width: 30px;
+      }
+      .scroll-container {
+        width: calc(100vw - 30px);
+      }
     }
   </style>
 </head>
@@ -243,19 +262,13 @@
     <h1>Frakta Header</h1>
   </header>
 
-  <!-- Rechter Interaktionsbereich -->
-  <div class="scroll-edge"></div>
-
-  <!-- Scroll Indicator Linie und Kreuz -->
-  <div class="scroll-indicator-line">
-    <div class="scroll-indicator-cross" id="indicator-cross"></div>
-  </div>
-
-  <!-- Inhalt -->
+  <!-- Scroll Container -->
   <div class="scroll-container" id="scroll-container">
     <section class="slide">
       <div class="blur-box">
         <div class="cross-holder">
+          <div class="cross top-left"></div>
+          <div class="cross top-right"></div>
           <div class="cross bottom-left"></div>
           <div class="cross bottom-right"></div>
         </div>
@@ -267,6 +280,8 @@
     <section class="slide">
       <div class="blur-box">
         <div class="cross-holder">
+          <div class="cross top-left"></div>
+          <div class="cross top-right"></div>
           <div class="cross bottom-left"></div>
           <div class="cross bottom-right"></div>
         </div>
@@ -278,6 +293,8 @@
     <section class="slide">
       <div class="blur-box">
         <div class="cross-holder">
+          <div class="cross top-left"></div>
+          <div class="cross top-right"></div>
           <div class="cross bottom-left"></div>
           <div class="cross bottom-right"></div>
         </div>
@@ -287,47 +304,84 @@
     </section>
   </div>
 
+  <!-- Scroll-Anzeige rechts -->
+  <div class="scroll-indicator-line" id="scroll-indicator-line" tabindex="0" aria-label="Scroll Bereich">
+    <div class="scroll-indicator-line-inner" id="scroll-indicator-line-inner">
+      <div class="scroll-indicator-cross" id="indicator-cross"></div>
+    </div>
+  </div>
+
   <script>
     const scrollContainer = document.getElementById('scroll-container');
     const indicatorCross = document.getElementById('indicator-cross');
+    const indicatorLine = document.getElementById('scroll-indicator-line');
     const slides = scrollContainer.querySelectorAll('.slide');
 
-    // Position des rechten Kreuzes der Blur-Boxen herausfinden
-    function getCrossRightPosition() {
-      // Nimm das rechte Kreuz der ersten Blur-Box als Referenz
+    // Berechne horizontalen Offset der rechten Kreuze in Blur-Boxen (linker Rand des Scroll-Indikators)
+    function getCrossRightOffset() {
       const firstCross = slides[0].querySelector('.cross.bottom-right');
-      if (!firstCross) return window.innerWidth - 40; // fallback rechts ca
-      // Kreuz relativ zum Viewport links
+      if (!firstCross) return window.innerWidth - 40;
       const rect = firstCross.getBoundingClientRect();
       return rect.left + rect.width / 2;
     }
 
-    // Initial Position setzen (horizontal)
-    function setIndicatorHorizontal() {
-      const x = getCrossRightPosition();
-      indicatorCross.style.left = `${x - 8}px`; // 8px = halb Breite Kreuz (16px)
+    // Setzt horizontale Position der Scroll-Leiste (rechts)
+    function positionScrollIndicator() {
+      const offset = getCrossRightOffset();
+      // Scroll-Indikator rechte Seite auf offset - Linie hat 1px, wir positionieren links so, dass Linie auf offset steht
+      indicatorLine.style.right = `${window.innerWidth - offset}px`;
     }
 
-    // Position des Scroll-Kreuzes vertikal animieren
+    // Scroll-Kreuz vertikal positionieren anhand Scroll
     function updateIndicatorVertical() {
       const scrollTop = scrollContainer.scrollTop;
-      const totalHeight = scrollContainer.scrollHeight - scrollContainer.clientHeight;
-      const percentage = scrollTop / totalHeight;
-      const lineHeight = window.innerHeight;
+      const maxScroll = scrollContainer.scrollHeight - scrollContainer.clientHeight;
+      const scrollRatio = maxScroll > 0 ? scrollTop / maxScroll : 0;
+      const lineHeight = indicatorLine.clientHeight;
       const crossHeight = indicatorCross.offsetHeight;
-      indicatorCross.style.top = `${percentage * (lineHeight - crossHeight)}px`;
+      indicatorCross.style.top = `${scrollRatio * (lineHeight - crossHeight)}px`;
     }
 
-    // Setze initial
-    window.addEventListener('resize', () => {
-      setIndicatorHorizontal();
+    // Scroll-Event
+    scrollContainer.addEventListener('scroll', () => {
       updateIndicatorVertical();
     });
 
-    scrollContainer.addEventListener('scroll', updateIndicatorVertical);
+    // Scrollbar interaktiv machen (Wheel & Touch)
+    indicatorLine.addEventListener('wheel', e => {
+      e.preventDefault();
+      scrollContainer.scrollBy({ top: e.deltaY, behavior: 'smooth' });
+    });
 
-    // Startwerte
-    setIndicatorHorizontal();
+    let touchStartY = null;
+    indicatorLine.addEventListener('touchstart', e => {
+      if (e.touches.length === 1) {
+        touchStartY = e.touches[0].clientY;
+      }
+    });
+
+    indicatorLine.addEventListener('touchmove', e => {
+      if (touchStartY !== null && e.touches.length === 1) {
+        const touchY = e.touches[0].clientY;
+        const delta = touchStartY - touchY;
+        scrollContainer.scrollBy({ top: delta, behavior: 'auto' });
+        touchStartY = touchY;
+        e.preventDefault();
+      }
+    });
+
+    indicatorLine.addEventListener('touchend', e => {
+      touchStartY = null;
+    });
+
+    // Beim Fenster-Resize auch Position anpassen
+    window.addEventListener('resize', () => {
+      positionScrollIndicator();
+      updateIndicatorVertical();
+    });
+
+    // Initial
+    positionScrollIndicator();
     updateIndicatorVertical();
   </script>
 </body>
