@@ -11,11 +11,26 @@
     }html, body {
   height: 100%;
   font-family: sans-serif;
-  overflow-y: scroll;
   background: black;
+  scroll-behavior: smooth;
 }
 
-/* Hintergrund */
+body {
+  overflow: auto;
+  scroll-snap-type: y mandatory;
+}
+
+section.slide {
+  height: 100vh;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  scroll-snap-align: start;
+  position: relative;
+  z-index: 1;
+  pointer-events: none;
+}
+
 .background {
   position: fixed;
   top: 0;
@@ -32,30 +47,19 @@
   border: none;
 }
 
-/* Content Wrapper */
-.slide {
-  height: 100vh;
-  display: flex;
-  align-items: flex-end;
-  justify-content: center;
-  position: relative;
-  z-index: 1;
-}
-
 .blur-box {
   width: 100%;
   max-width: 900px;
-  margin: 0 auto 2rem auto;
   background: rgba(255, 255, 255, 0.1);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   color: white;
   padding: 2rem;
+  margin-bottom: 2rem;
   position: relative;
   pointer-events: auto;
 }
 
-/* Fake-Kreuzhalter fuer sichtbarkeit */
 .cross-holder {
   position: absolute;
   width: 100%;
