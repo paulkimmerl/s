@@ -1,223 +1,240 @@
 <!DOCTYPE html>
 <html lang="de">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Frakta Visual Scroll</title>
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Frakta Interaktive Seite</title>
+<style>
+  /* Reset */
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
 
-    html, body {
-      height: 100%;
-      background: black;
-      font-family: sans-serif;
-      overflow-x: hidden;
-    }
+  html, body {
+    height: 100%;
+    background: black;
+    font-family: Arial, sans-serif;
+    overflow-x: hidden;
+  }
 
-    /* Interaktive Frakta-Seite im Hintergrund */
-    .background-iframe {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100vw;
-      height: 100vh;
-      z-index: 0;
-      border: none;
-    }
+  /* Interaktiver Hintergrund */
+  .background-iframe {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100vw; height: 100vh;
+    border: none;
+    z-index: 0;
+  }
 
-    .content-wrapper {
-      position: relative;
-      z-index: 1;
-      pointer-events: none;
-    }
+  /* Wrapper der Content-Blöcke */
+  .content-wrapper {
+    position: relative;
+    z-index: 1;
+    pointer-events: none; /* damit man hinter den Blöcken klicken kann, außer dort wo Content ist */
+    display: flex;
+    flex-direction: column;
+    gap: 15vh; /* viel Abstand zwischen den Blöcken */
+    padding: 10vh 0;
+  }
 
+  /* Jeder Content-Block */
+  .content-block {
+    pointer-events: auto; /* Inhalte interaktiv */
+    width: 100%;
+    min-height: 100vh; /* 1 Block pro Viewport */
+    background: rgba(255 255 255 / 0.15);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    color: white;
+    padding: 3rem 2rem;
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  /* Innerer Bereich mit max Breite */
+  .content-inner {
+    max-width: 900px;
+    width: 100%;
+  }
+
+  h1, h2, p {
+    margin-bottom: 1rem;
+  }
+
+  iframe.content-embed {
+    width: 100%;
+    max-height: 300px;
+    border: none;
+    border-radius: 8px;
+    margin-top: 1rem;
+  }
+
+  /* Feine Kreuzlinien als kleine "L"-Form oben links, oben rechts, unten links, unten rechts */
+  .cross-line {
+    position: absolute;
+    background: rgba(255 255 255 / 0.3);
+  }
+
+  /* Horizontal Linien - 30px lang, 1px dick */
+  .cross-line.horizontal {
+    height: 1px;
+    width: 30px;
+  }
+
+  /* Vertikal Linien - 30px lang, 1px dick */
+  .cross-line.vertical {
+    width: 1px;
+    height: 30px;
+  }
+
+  /* Oben links */
+  .cross-top-left-horizontal {
+    top: 0;
+    left: 20px;
+    transform: translateY(-50%);
+  }
+  .cross-top-left-vertical {
+    top: 20px;
+    left: 0;
+    transform: translateX(-50%);
+  }
+
+  /* Oben rechts */
+  .cross-top-right-horizontal {
+    top: 0;
+    right: 20px;
+    transform: translateY(-50%);
+  }
+  .cross-top-right-vertical {
+    top: 20px;
+    right: 0;
+    transform: translateX(50%);
+  }
+
+  /* Unten links */
+  .cross-bottom-left-horizontal {
+    bottom: 0;
+    left: 20px;
+    transform: translateY(50%);
+  }
+  .cross-bottom-left-vertical {
+    bottom: 20px;
+    left: 0;
+    transform: translateX(-50%);
+  }
+
+  /* Unten rechts */
+  .cross-bottom-right-horizontal {
+    bottom: 0;
+    right: 20px;
+    transform: translateY(50%);
+  }
+  .cross-bottom-right-vertical {
+    bottom: 20px;
+    right: 0;
+    transform: translateX(50%);
+  }
+
+  /* Responsive */
+  @media (max-width: 600px) {
     .content-block {
-      pointer-events: auto;
-      width: 100%;
-      padding: 3rem 2rem;
-      background: rgba(255, 255, 255, 0.12);
-      backdrop-filter: blur(24px);
-      -webkit-backdrop-filter: blur(24px);
-      color: white;
-      position: relative;
-      min-height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+      padding: 2rem 1rem;
     }
-
-    .content-inner {
-      max-width: 800px;
-      width: 100%;
-    }
-
-    h1, h2, p {
-      margin-bottom: 1rem;
-    }
-
     iframe.content-embed {
-      width: 100%;
-      height: 300px;
-      border: none;
-      border-radius: 8px;
-      margin-top: 1rem;
+      max-height: 200px;
     }
 
-    /* Feine, lange Kreuzlinien */
-    .line-horizontal,
-    .line-vertical {
-      position: absolute;
-      background: rgba(255, 255, 255, 0.3);
+    .cross-line.horizontal {
+      width: 20px;
+    }
+    .cross-line.vertical {
+      height: 20px;
     }
 
-    .line-horizontal {
-      height: 1px;
-      width: 40px;
+    .cross-top-left-horizontal,
+    .cross-top-right-horizontal,
+    .cross-bottom-left-horizontal,
+    .cross-bottom-right-horizontal {
+      left: 15px;
+      right: 15px;
     }
-
-    .line-vertical {
-      width: 1px;
-      height: 40px;
+    .cross-top-left-vertical,
+    .cross-top-right-vertical,
+    .cross-bottom-left-vertical,
+    .cross-bottom-right-vertical {
+      top: 15px;
+      bottom: 15px;
     }
-
-    /* Positionierungen */
-    .line-top-left-h {
-      top: 0;
-      left: 2rem;
-      transform: translateY(-50%);
-    }
-
-    .line-top-left-v {
-      top: 0;
-      left: 2rem;
-      transform: translate(-50%, 0);
-    }
-
-    .line-top-right-h {
-      top: 0;
-      right: 2rem;
-      transform: translateY(-50%);
-    }
-
-    .line-top-right-v {
-      top: 0;
-      right: 2rem;
-      transform: translate(50%, 0);
-    }
-
-    .line-bottom-left-h {
-      bottom: 0;
-      left: 2rem;
-      transform: translateY(50%);
-    }
-
-    .line-bottom-left-v {
-      bottom: 0;
-      left: 2rem;
-      transform: translate(-50%, 0);
-    }
-
-    .line-bottom-right-h {
-      bottom: 0;
-      right: 2rem;
-      transform: translateY(50%);
-    }
-
-    .line-bottom-right-v {
-      bottom: 0;
-      right: 2rem;
-      transform: translate(50%, 0);
-    }
-
-    @media (max-width: 600px) {
-      .content-block {
-        padding: 2rem 1rem;
-      }
-
-      iframe.content-embed {
-        height: 200px;
-      }
-
-      .line-horizontal {
-        width: 30px;
-      }
-
-      .line-vertical {
-        height: 30px;
-      }
-    }
-  </style>
+  }
+</style>
 </head>
 <body>
 
-  <!-- Interaktive Frakta -->
-  <iframe
-    class="background-iframe"
-    src="https://paulkimmerl.github.io/frakta/"
-    allowfullscreen
-  ></iframe>
+  <!-- Hintergrund -->
+  <iframe class="background-iframe" src="https://paulkimmerl.github.io/frakta/" allowfullscreen></iframe>
 
   <div class="content-wrapper">
 
     <!-- Block 1 -->
-    <div class="content-block">
-      <div class="line-horizontal line-top-left-h"></div>
-      <div class="line-vertical line-top-left-v"></div>
-      <div class="line-horizontal line-top-right-h"></div>
-      <div class="line-vertical line-top-right-v"></div>
+    <section class="content-block">
+      <!-- Kreuz oben links -->
+      <div class="cross-line horizontal cross-top-left-horizontal"></div>
+      <div class="cross-line vertical cross-top-left-vertical"></div>
+      <!-- Kreuz oben rechts -->
+      <div class="cross-line horizontal cross-top-right-horizontal"></div>
+      <div class="cross-line vertical cross-top-right-vertical"></div>
+      <!-- Kreuz unten links -->
+      <div class="cross-line horizontal cross-bottom-left-horizontal"></div>
+      <div class="cross-line vertical cross-bottom-left-vertical"></div>
+      <!-- Kreuz unten rechts -->
+      <div class="cross-line horizontal cross-bottom-right-horizontal"></div>
+      <div class="cross-line vertical cross-bottom-right-vertical"></div>
 
       <div class="content-inner">
-        <h1>Frakta Interaktion</h1>
-        <p>Dieser Bereich nutzt den vollen Bildschirm aus, um dem Frakta-Hintergrund Raum zu geben. Der Inhalt ist bewusst reduziert.</p>
+        <h1>Frakta Interaktive Seite</h1>
+        <p>Der Hintergrund bleibt klar und interaktiv, nur die Info-Boxen sind mit Blur und Transparenz versehen.</p>
         <iframe class="content-embed" src="https://www.youtube.com/embed/dQw4w9WgXcQ" allowfullscreen></iframe>
       </div>
-
-      <div class="line-horizontal line-bottom-left-h"></div>
-      <div class="line-vertical line-bottom-left-v"></div>
-      <div class="line-horizontal line-bottom-right-h"></div>
-      <div class="line-vertical line-bottom-right-v"></div>
-    </div>
+    </section>
 
     <!-- Block 2 -->
-    <div class="content-block">
-      <div class="line-horizontal line-top-left-h"></div>
-      <div class="line-vertical line-top-left-v"></div>
-      <div class="line-horizontal line-top-right-h"></div>
-      <div class="line-vertical line-top-right-v"></div>
+    <section class="content-block">
+      <div class="cross-line horizontal cross-top-left-horizontal"></div>
+      <div class="cross-line vertical cross-top-left-vertical"></div>
+      <div class="cross-line horizontal cross-top-right-horizontal"></div>
+      <div class="cross-line vertical cross-top-right-vertical"></div>
+      <div class="cross-line horizontal cross-bottom-left-horizontal"></div>
+      <div class="cross-line vertical cross-bottom-left-vertical"></div>
+      <div class="cross-line horizontal cross-bottom-right-horizontal"></div>
+      <div class="cross-line vertical cross-bottom-right-vertical"></div>
 
       <div class="content-inner">
-        <h2>Mehr Raum</h2>
-        <p>Zwischen den Blöcken bleibt stets viel Platz. Das erzeugt Weite und lässt Raum für visuelle Tiefe – perfekt für generative Kunst.</p>
+        <h2>Viel Platz für den Hintergrund</h2>
+        <p>Zwischen den Blöcken bleibt großzügiger Abstand, so dass der Frakta-Hintergrund gut sichtbar und anklickbar bleibt.</p>
       </div>
-
-      <div class="line-horizontal line-bottom-left-h"></div>
-      <div class="line-vertical line-bottom-left-v"></div>
-      <div class="line-horizontal line-bottom-right-h"></div>
-      <div class="line-vertical line-bottom-right-v"></div>
-    </div>
+    </section>
 
     <!-- Block 3 -->
-    <div class="content-block">
-      <div class="line-horizontal line-top-left-h"></div>
-      <div class="line-vertical line-top-left-v"></div>
-      <div class="line-horizontal line-top-right-h"></div>
-      <div class="line-vertical line-top-right-v"></div>
+    <section class="content-block">
+      <div class="cross-line horizontal cross-top-left-horizontal"></div>
+      <div class="cross-line vertical cross-top-left-vertical"></div>
+      <div class="cross-line horizontal cross-top-right-horizontal"></div>
+      <div class="cross-line vertical cross-top-right-vertical"></div>
+      <div class="cross-line horizontal cross-bottom-left-horizontal"></div>
+      <div class="cross-line vertical cross-bottom-left-vertical"></div>
+      <div class="cross-line horizontal cross-bottom-right-horizontal"></div>
+      <div class="cross-line vertical cross-bottom-right-vertical"></div>
 
       <div class="content-inner">
-        <h2>Kontakt</h2>
-        <p>Hier kannst du z. B. eine Karte oder ein Formular einbetten – oder einfach nur Raum lassen, um die Grafik zu genießen.</p>
+        <h2>Kontakt & Karte</h2>
+        <p>Auch Karten oder andere eingebettete Inhalte sind möglich.</p>
         <iframe class="content-embed" src="https://openstreetmap.org/export/embed.html?bbox=13.4,52.49,13.42,52.5&layer=mapnik" allowfullscreen></iframe>
       </div>
-
-      <div class="line-horizontal line-bottom-left-h"></div>
-      <div class="line-vertical line-bottom-left-v"></div>
-      <div class="line-horizontal line-bottom-right-h"></div>
-      <div class="line-vertical line-bottom-right-v"></div>
-    </div>
+    </section>
 
   </div>
 
