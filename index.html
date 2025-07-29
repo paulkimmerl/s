@@ -47,6 +47,33 @@ section.slide {
   width: 100%;
   height: 100%;
   border: none;
+  mix-blend-mode: normal;
+}
+
+.effect-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 0;
+  pointer-events: none;
+  transition: opacity 0.8s ease;
+}
+
+.effect-feedback {
+  mix-blend-mode: difference;
+  background: repeating-linear-gradient(45deg, rgba(255,255,255,0.05) 0px, rgba(255,255,255,0.05) 1px, transparent 1px, transparent 4px);
+}
+
+.effect-color {
+  mix-blend-mode: color;
+  background: rgba(255, 0, 100, 0.1);
+}
+
+.effect-bloom {
+  backdrop-filter: brightness(1.5) blur(3px);
+  -webkit-backdrop-filter: brightness(1.5) blur(3px);
 }
 
 .blur-box {
@@ -129,11 +156,29 @@ iframe.embed {
 }
 
   </style>
+  <script>
+    window.addEventListener('scroll', () => {
+      const slides = document.querySelectorAll('.slide');
+      const overlays = document.querySelectorAll('.effect-overlay');
+      let current = 0;
+      slides.forEach((slide, index) => {
+        const rect = slide.getBoundingClientRect();
+        if (rect.top >= 0 && rect.bottom <= window.innerHeight + 50) {
+          current = index;
+        }
+      });
+      overlays.forEach((el, i) => {
+        el.style.opacity = i === current ? '1' : '0';
+      });
+    });
+  </script>
 </head>
 <body>
   <div class="background">
     <iframe src="https://paulkimmerl.github.io/frakta/" allowfullscreen></iframe>
-  </div>  <div class="scroll-container">
+  </div>  <!-- Effekt-Overlays für jede Slide -->  <div class="effect-overlay effect-feedback" style="opacity:1;"></div>
+  <div class="effect-overlay effect-color" style="opacity:0;"></div>
+  <div class="effect-overlay effect-bloom" style="opacity:0;"></div>  <div class="scroll-container">
     <section class="slide">
       <div class="blur-box">
         <div class="cross-holder">
