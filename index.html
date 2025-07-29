@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Frakta Scrollseite</title>
+  <title>Frakta Interaktive Scrollseite</title>
   <style>
     * {
       margin: 0;
@@ -15,31 +15,36 @@
       height: 100%;
       font-family: sans-serif;
       overflow-x: hidden;
+      position: relative;
     }
 
-    body {
-      background: url('https://paulkimmerl.github.io/frakta/') no-repeat center center fixed;
-      background-size: cover;
+    /* Interaktiver Hintergrund */
+    .background-iframe {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      z-index: -1;
+      border: none;
     }
 
     .content-wrapper {
       display: flex;
       flex-direction: column;
       align-items: center;
+      gap: 5rem; /* Abstand zwischen Blöcken */
+      padding: 6rem 0;
     }
 
     .content-block {
       width: 100%;
-      padding: 3rem 1rem;
+      max-width: 900px;
+      padding: 2rem;
       backdrop-filter: blur(16px);
-      background-color: rgba(0, 0, 0, 0.5);
+      background-color: rgba(0, 0, 0, 0.4);
       color: white;
       position: relative;
-    }
-
-    .content-inner {
-      max-width: 800px;
-      margin: 0 auto;
     }
 
     .corner-cross {
@@ -76,23 +81,20 @@
       transform: translateY(50%);
     }
 
-    iframe {
+    iframe.content-embed {
       width: 100%;
       height: 300px;
       border: none;
       margin-top: 1rem;
-    }
-
-    h1, h2, p {
-      margin-bottom: 1rem;
+      border-radius: 8px;
     }
 
     @media (max-width: 600px) {
       .content-block {
-        padding: 2rem 1rem;
+        padding: 1.5rem;
       }
 
-      iframe {
+      iframe.content-embed {
         height: 200px;
       }
 
@@ -105,52 +107,64 @@
   </style>
 </head>
 <body>
+
+  <!-- Hintergrund als interaktives Live-IFrame -->
+  <iframe
+    class="background-iframe"
+    src="https://paulkimmerl.github.io/frakta/"
+    allowfullscreen
+  ></iframe>
+
   <div class="content-wrapper">
-    <!-- Slide 1 -->
+
+    <!-- Block 1 -->
     <div class="content-block">
       <div class="corner-cross cross-top-left">✚</div>
       <div class="corner-cross cross-top-right">✚</div>
 
-      <div class="content-inner">
-        <h1>Willkommen zur Frakta-Seite</h1>
-        <p>Dies ist eine minimalistische Scrollseite mit Blur-Blöcken über voller Breite und einem generativen Hintergrund von <strong>paulkimmerl.github.io/frakta</strong>.</p>
+      <h1>Frakta Scrollseite</h1>
+      <p>Der Hintergrund ist interaktiv – du kannst ihn auch zwischen den Blöcken sehen und bedienen. Ideal für kreative WebGL-Experimente oder Visuals.</p>
 
-        <iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ" allowfullscreen></iframe>
-      </div>
+      <iframe
+        class="content-embed"
+        src="https://www.youtube.com/embed/dQw4w9WgXcQ"
+        allowfullscreen
+      ></iframe>
 
       <div class="corner-cross cross-bottom-left">✚</div>
       <div class="corner-cross cross-bottom-right">✚</div>
     </div>
 
-    <!-- Slide 2 -->
+    <!-- Block 2 -->
     <div class="content-block">
       <div class="corner-cross cross-top-left">✚</div>
       <div class="corner-cross cross-top-right">✚</div>
 
-      <div class="content-inner">
-        <h2>Infos</h2>
-        <p>Der Hintergrund ist dauerhaft fixiert und bewegt sich nicht beim Scrollen. Die Inhalte darüber sind transparent und weich verschwommen. Die Blöcke sind modular und passen sich in der Höhe dem jeweiligen Inhalt an.</p>
-      </div>
+      <h2>Weitere Infos</h2>
+      <p>Zwischen den Blöcken bleibt immer Platz – das macht den Hintergrund sichtbar und bedienbar. Blöcke sind responsiv und passen sich jeder Bildschirmgröße an.</p>
 
       <div class="corner-cross cross-bottom-left">✚</div>
       <div class="corner-cross cross-bottom-right">✚</div>
     </div>
 
-    <!-- Slide 3 -->
+    <!-- Block 3 -->
     <div class="content-block">
       <div class="corner-cross cross-top-left">✚</div>
       <div class="corner-cross cross-top-right">✚</div>
 
-      <div class="content-inner">
-        <h2>Kontakt & Karte</h2>
-        <p>Hier ist eine eingebettete Karte von OpenStreetMap als Beispiel für externe Inhalte.</p>
+      <h2>Karte & Kontakt</h2>
+      <p>Auch externe Inhalte wie Karten, Social Feeds oder Medien lassen sich integrieren.</p>
 
-        <iframe src="https://openstreetmap.org/export/embed.html?bbox=13.4,52.49,13.42,52.5&layer=mapnik" allowfullscreen></iframe>
-      </div>
+      <iframe
+        class="content-embed"
+        src="https://openstreetmap.org/export/embed.html?bbox=13.4,52.49,13.42,52.5&layer=mapnik"
+        allowfullscreen
+      ></iframe>
 
       <div class="corner-cross cross-bottom-left">✚</div>
       <div class="corner-cross cross-bottom-right">✚</div>
     </div>
+
   </div>
 </body>
 </html>
