@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Scrollbare Infoseite</title>
+  <title>Frakta Scrollseite</title>
   <style>
     * {
       margin: 0;
@@ -14,83 +14,92 @@
     html, body {
       height: 100%;
       font-family: sans-serif;
-      overflow-y: scroll;
+      overflow-x: hidden;
     }
 
     body {
-      background: url('https://picsum.photos/1920/1080?blur') no-repeat center center fixed;
+      background: url('https://paulkimmerl.github.io/frakta/') no-repeat center center fixed;
       background-size: cover;
-      position: relative;
     }
 
     .content-wrapper {
       display: flex;
       flex-direction: column;
       align-items: center;
-      padding: 2rem 1rem;
     }
 
     .content-block {
       width: 100%;
-      max-width: 800px;
-      margin: 4rem 0;
-      padding: 2rem;
-      backdrop-filter: blur(12px);
-      background-color: rgba(255, 255, 255, 0.1);
-      border-radius: 16px;
+      padding: 3rem 1rem;
+      backdrop-filter: blur(16px);
+      background-color: rgba(0, 0, 0, 0.5);
+      color: white;
       position: relative;
+    }
+
+    .content-inner {
+      max-width: 800px;
+      margin: 0 auto;
     }
 
     .corner-cross {
       position: absolute;
-      width: 12px;
-      height: 12px;
+      width: 14px;
+      height: 14px;
+      font-size: 14px;
       color: white;
       font-weight: bold;
-      font-size: 14px;
-      line-height: 12px;
+      line-height: 14px;
     }
 
     .cross-top-left {
-      top: -12px;
+      top: 0;
       left: 1rem;
+      transform: translateY(-50%);
     }
 
     .cross-top-right {
-      top: -12px;
+      top: 0;
       right: 1rem;
+      transform: translateY(-50%);
     }
 
     .cross-bottom-left {
-      bottom: -12px;
+      bottom: 0;
       left: 1rem;
+      transform: translateY(50%);
     }
 
     .cross-bottom-right {
-      bottom: -12px;
+      bottom: 0;
       right: 1rem;
-    }
-
-    .text-block {
-      color: white;
-      margin-bottom: 1.5rem;
+      transform: translateY(50%);
     }
 
     iframe {
       width: 100%;
       height: 300px;
       border: none;
-      border-radius: 8px;
+      margin-top: 1rem;
+    }
+
+    h1, h2, p {
+      margin-bottom: 1rem;
     }
 
     @media (max-width: 600px) {
       .content-block {
-        padding: 1rem;
-        margin: 2rem 0;
+        padding: 2rem 1rem;
       }
 
       iframe {
         height: 200px;
+      }
+
+      .corner-cross {
+        font-size: 12px;
+        width: 12px;
+        height: 12px;
       }
     }
   </style>
@@ -102,12 +111,12 @@
       <div class="corner-cross cross-top-left">✚</div>
       <div class="corner-cross cross-top-right">✚</div>
 
-      <div class="text-block">
-        <h1>Willkommen!</h1>
-        <p>Dies ist ein Beispiel für eine minimalistische Webseite mit einem fixierten Hintergrund und einem Blur-Overlay, das sich dynamisch an den Inhalt anpasst.</p>
-      </div>
+      <div class="content-inner">
+        <h1>Willkommen zur Frakta-Seite</h1>
+        <p>Dies ist eine minimalistische Scrollseite mit Blur-Blöcken über voller Breite und einem generativen Hintergrund von <strong>paulkimmerl.github.io/frakta</strong>.</p>
 
-      <iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ" allowfullscreen></iframe>
+        <iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ" allowfullscreen></iframe>
+      </div>
 
       <div class="corner-cross cross-bottom-left">✚</div>
       <div class="corner-cross cross-bottom-right">✚</div>
@@ -118,10 +127,9 @@
       <div class="corner-cross cross-top-left">✚</div>
       <div class="corner-cross cross-top-right">✚</div>
 
-      <div class="text-block">
-        <h2>Weitere Informationen</h2>
-        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque pulvinar posuere lacus, at fermentum metus euismod sit amet.</p>
-        <p>Phasellus non risus nec nulla congue faucibus. Integer fringilla fermentum velit, in finibus nulla cursus eget.</p>
+      <div class="content-inner">
+        <h2>Infos</h2>
+        <p>Der Hintergrund ist dauerhaft fixiert und bewegt sich nicht beim Scrollen. Die Inhalte darüber sind transparent und weich verschwommen. Die Blöcke sind modular und passen sich in der Höhe dem jeweiligen Inhalt an.</p>
       </div>
 
       <div class="corner-cross cross-bottom-left">✚</div>
@@ -133,12 +141,12 @@
       <div class="corner-cross cross-top-left">✚</div>
       <div class="corner-cross cross-top-right">✚</div>
 
-      <div class="text-block">
-        <h2>Kontakt</h2>
-        <p>Du kannst uns unter info@example.com erreichen oder uns auf sozialen Medien folgen.</p>
-      </div>
+      <div class="content-inner">
+        <h2>Kontakt & Karte</h2>
+        <p>Hier ist eine eingebettete Karte von OpenStreetMap als Beispiel für externe Inhalte.</p>
 
-      <iframe src="https://openstreetmap.org/export/embed.html?bbox=13.4,52.49,13.42,52.5&layer=mapnik" allowfullscreen></iframe>
+        <iframe src="https://openstreetmap.org/export/embed.html?bbox=13.4,52.49,13.42,52.5&layer=mapnik" allowfullscreen></iframe>
+      </div>
 
       <div class="corner-cross cross-bottom-left">✚</div>
       <div class="corner-cross cross-bottom-right">✚</div>
