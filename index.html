@@ -61,12 +61,13 @@ section.slide {
   transition: opacity 0.8s ease;
 }
 
-.effect-feedback {
-  background: repeating-linear-gradient(45deg, rgba(255,255,255,0.05) 0px, rgba(255,255,255,0.05) 1px, transparent 1px, transparent 4px);
+.effect-original {
+  background: transparent;
 }
 
 .effect-color {
   background: rgba(255, 0, 100, 0.08);
+  mix-blend-mode: screen;
 }
 
 .effect-bloom {
@@ -175,7 +176,7 @@ iframe.embed {
 <body>
   <div class="background">
     <iframe src="https://paulkimmerl.github.io/frakta/" allowfullscreen></iframe>
-  </div>  <!-- Effekt-Overlays für jede Slide -->  <div class="effect-overlay effect-feedback" style="opacity:1;"></div>
+  </div>  <!-- Effekt-Overlays für jede Slide -->  <div class="effect-overlay effect-original" style="opacity:1;"></div>
   <div class="effect-overlay effect-color" style="opacity:0;"></div>
   <div class="effect-overlay effect-bloom" style="opacity:0;"></div>  <div class="scroll-container">
     <section class="slide">
@@ -187,7 +188,7 @@ iframe.embed {
           <div class="cross bottom-right"></div>
         </div>
         <h1>Frakta Projekt</h1>
-        <p>Scrollbare Seite mit sichtbarem, interaktivem Hintergrund und Content nur unten.</p>
+        <p>Originale Frakta-Visualisierung ohne Filtereffekt.</p>
         <iframe class="embed" src="https://www.youtube.com/embed/dQw4w9WgXcQ"></iframe>
       </div>
     </section><section class="slide">
@@ -198,8 +199,8 @@ iframe.embed {
       <div class="cross bottom-left"></div>
       <div class="cross bottom-right"></div>
     </div>
-    <h2>Hintergrund bleibt sichtbar</h2>
-    <p>Der Blur-Block ist nur so hoch wie der Inhalt.</p>
+    <h2>Farbkonvertierter Hintergrund</h2>
+    <p>Ein leichter Rosastich zur Veränderung der Stimmung.</p>
   </div>
 </section>
 
@@ -211,8 +212,8 @@ iframe.embed {
       <div class="cross bottom-left"></div>
       <div class="cross bottom-right"></div>
     </div>
-    <h2>Nur eine Box pro Seite</h2>
-    <p>Mehr Raum für den Hintergrund, Interaktion bleibt möglich.</p>
+    <h2>Bloom Effekt</h2>
+    <p>Ein Helligkeits- und Unschärfeeffekt für leuchtende Szenen.</p>
   </div>
 </section>
 
