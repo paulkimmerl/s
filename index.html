@@ -13,10 +13,12 @@
   font-family: sans-serif;
   background: black;
   scroll-behavior: smooth;
+  overflow: hidden;
 }
 
-body {
-  overflow: auto;
+.scroll-container {
+  height: 100vh;
+  overflow-y: scroll;
   scroll-snap-type: y mandatory;
 }
 
@@ -131,40 +133,45 @@ iframe.embed {
 <body>
   <div class="background">
     <iframe src="https://paulkimmerl.github.io/frakta/" allowfullscreen></iframe>
-  </div>  <section class="slide">
-    <div class="blur-box">
-      <div class="cross-holder">
-        <div class="cross top-left"></div>
-        <div class="cross top-right"></div>
-        <div class="cross bottom-left"></div>
-        <div class="cross bottom-right"></div>
+  </div>  <div class="scroll-container">
+    <section class="slide">
+      <div class="blur-box">
+        <div class="cross-holder">
+          <div class="cross top-left"></div>
+          <div class="cross top-right"></div>
+          <div class="cross bottom-left"></div>
+          <div class="cross bottom-right"></div>
+        </div>
+        <h1>Frakta Projekt</h1>
+        <p>Scrollbare Seite mit sichtbarem, interaktivem Hintergrund und Content nur unten.</p>
+        <iframe class="embed" src="https://www.youtube.com/embed/dQw4w9WgXcQ"></iframe>
       </div>
-      <h1>Frakta Projekt</h1>
-      <p>Scrollbare Seite mit sichtbarem, interaktivem Hintergrund und Content nur unten.</p>
-      <iframe class="embed" src="https://www.youtube.com/embed/dQw4w9WgXcQ"></iframe>
+    </section><section class="slide">
+  <div class="blur-box">
+    <div class="cross-holder">
+      <div class="cross top-left"></div>
+      <div class="cross top-right"></div>
+      <div class="cross bottom-left"></div>
+      <div class="cross bottom-right"></div>
     </div>
-  </section>  <section class="slide">
-    <div class="blur-box">
-      <div class="cross-holder">
-        <div class="cross top-left"></div>
-        <div class="cross top-right"></div>
-        <div class="cross bottom-left"></div>
-        <div class="cross bottom-right"></div>
-      </div>
-      <h2>Hintergrund bleibt sichtbar</h2>
-      <p>Der Blur-Block ist nur so hoch wie der Inhalt.</p>
+    <h2>Hintergrund bleibt sichtbar</h2>
+    <p>Der Blur-Block ist nur so hoch wie der Inhalt.</p>
+  </div>
+</section>
+
+<section class="slide">
+  <div class="blur-box">
+    <div class="cross-holder">
+      <div class="cross top-left"></div>
+      <div class="cross top-right"></div>
+      <div class="cross bottom-left"></div>
+      <div class="cross bottom-right"></div>
     </div>
-  </section>  <section class="slide">
-    <div class="blur-box">
-      <div class="cross-holder">
-        <div class="cross top-left"></div>
-        <div class="cross top-right"></div>
-        <div class="cross bottom-left"></div>
-        <div class="cross bottom-right"></div>
-      </div>
-      <h2>Nur eine Box pro Seite</h2>
-      <p>Mehr Raum für den Hintergrund, Interaktion bleibt möglich.</p>
-    </div>
-  </section>
+    <h2>Nur eine Box pro Seite</h2>
+    <p>Mehr Raum für den Hintergrund, Interaktion bleibt möglich.</p>
+  </div>
+</section>
+
+  </div>
 </body>
 </html>
