@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Frakta Scroll + Indicator</title>
+  <title>Frakta Scroll + Scroll-Kreuz</title>
   <style>
     * {
       margin: 0;
@@ -124,7 +124,7 @@
       pointer-events: none; /* deaktiviert Interaktion */
     }
 
-    /* Ausnahme: Content & rechter Rand */
+    /* Ausnahme: Content & rechter Rand & Header */
     .blur-box, header, .scroll-edge {
       pointer-events: auto;
     }
@@ -150,6 +150,7 @@
       padding: 2rem;
       color: white;
       user-select: text;
+      position: relative;
     }
 
     .blur-box .cross-holder {
@@ -161,7 +162,7 @@
       pointer-events: none;
     }
 
-    /* Scroll-Indikator rechts */
+    /* Scroll-Indikator Linie rechts */
     .scroll-indicator-line {
       position: fixed;
       top: 0;
@@ -173,15 +174,33 @@
       pointer-events: none;
     }
 
-    .scroll-indicator-dot {
+    /* Scroll-Indikator Kreuz (ersetzt Punkt) */
+    .scroll-indicator-cross {
       position: absolute;
-      left: -4px;
-      width: 9px;
-      height: 9px;
-      border-radius: 50%;
+      width: 16px;
+      height: 16px;
+      pointer-events: none;
+    }
+    .scroll-indicator-cross::before,
+    .scroll-indicator-cross::after {
+      content: '';
+      position: absolute;
       background: white;
       opacity: 0.5;
-      transition: top 0.3s ease;
+    }
+    .scroll-indicator-cross::before {
+      width: 100%;
+      height: 1px;
+      top: 50%;
+      left: 0;
+      transform: translateY(-50%);
+    }
+    .scroll-indicator-cross::after {
+      height: 100%;
+      width: 1px;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
     }
 
     /* Unsichtbarer interaktiver Swipe-Bereich rechts */
@@ -227,9 +246,9 @@
   <!-- Rechter Interaktionsbereich -->
   <div class="scroll-edge"></div>
 
-  <!-- Scroll Indicator -->
+  <!-- Scroll Indicator Linie und Kreuz -->
   <div class="scroll-indicator-line">
-    <div class="scroll-indicator-dot" id="indicator-dot"></div>
+    <div class="scroll-indicator-cross" id="indicator-cross"></div>
   </div>
 
   <!-- Inhalt -->
@@ -270,19 +289,46 @@
 
   <script>
     const scrollContainer = document.getElementById('scroll-container');
-    const indicator = document.getElementById('indicator-dot');
+    const indicatorCross = document.getElementById('indicator-cross');
     const slides = scrollContainer.querySelectorAll('.slide');
 
-    scrollContainer.addEventListener('scroll', () => {
+    // Position des rechten Kreuzes der Blur-Boxen herausfinden
+    function getCrossRightPosition() {
+      // Nimm das rechte Kreuz der ersten Blur-Box als Referenz
+      const firstCross = slides[0].querySelector('.cross.bottom-right');
+      if (!firstCross) return window.innerWidth - 40; // fallback rechts ca
+      // Kreuz relativ zum Viewport links
+      const rect = firstCross.getBoundingClientRect();
+      return rect.left + rect.width / 2;
+    }
+
+    // Initial Position setzen (horizontal)
+    function setIndicatorHorizontal() {
+      const x = getCrossRightPosition();
+      indicatorCross.style.left = `${x - 8}px`; // 8px = halb Breite Kreuz (16px)
+    }
+
+    // Position des Scroll-Kreuzes vertikal animieren
+    function updateIndicatorVertical() {
       const scrollTop = scrollContainer.scrollTop;
       const totalHeight = scrollContainer.scrollHeight - scrollContainer.clientHeight;
       const percentage = scrollTop / totalHeight;
       const lineHeight = window.innerHeight;
-      const dotHeight = indicator.offsetHeight;
-      indicator.style.top = `${percentage * (lineHeight - dotHeight)}px`;
+      const crossHeight = indicatorCross.offsetHeight;
+      indicatorCross.style.top = `${percentage * (lineHeight - crossHeight)}px`;
+    }
+
+    // Setze initial
+    window.addEventListener('resize', () => {
+      setIndicatorHorizontal();
+      updateIndicatorVertical();
     });
 
-    // Optional: Swipe am rechten Rand (Touch-Support, wenn du willst später)
+    scrollContainer.addEventListener('scroll', updateIndicatorVertical);
+
+    // Startwerte
+    setIndicatorHorizontal();
+    updateIndicatorVertical();
   </script>
 </body>
 </html>
