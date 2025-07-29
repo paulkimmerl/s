@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Frakta Fullpage Scroll</title>
+<title>Frakta Fullpage Scroll mit Blur nur auf Inhalt</title>
 <style>
   /* Reset */
   * {
@@ -11,12 +11,12 @@
   }
   html, body {
     height: 100%;
-    overflow: hidden; /* Verhindert normales Scrollen, wir benutzen Scroll Snap auf Container */
+    overflow: hidden;
     font-family: Arial, sans-serif;
     background: black;
   }
 
-  /* Interaktiver Hintergrund */
+  /* Hintergrund-iframe fixiert unter allem */
   .background-iframe {
     position: fixed;
     top: 0; left: 0;
@@ -25,7 +25,7 @@
     z-index: 0;
   }
 
-  /* Scroll Container mit Snap */
+  /* Scroll Container mit vertikal Scroll + Snap */
   .scroll-container {
     position: relative;
     z-index: 1;
@@ -35,25 +35,30 @@
     -webkit-overflow-scrolling: touch;
   }
 
-  /* Jeder Vollbild Content Block */
+  /* Vollbild-Block, nimmt 100vh */
   .content-block {
     scroll-snap-align: start;
     width: 100vw;
     height: 100vh;
-    background: rgba(255 255 255 / 0.12);
-    backdrop-filter: blur(16px);
-    -webkit-backdrop-filter: blur(16px);
-    color: white;
-    position: relative;
-    padding: 3rem 2rem;
     display: flex;
     justify-content: center;
     align-items: center;
+    position: relative;
+    padding: 3rem 2rem;
+    /* Kein Blur hier, der kommt im inneren Container */
   }
 
-  .content-inner {
+  /* Der Blur-Container um den Content, genau so groß wie der Inhalt */
+  .blur-container {
+    position: relative;
     max-width: 900px;
     width: 100%;
+    padding: 2rem 3rem;
+    background: rgba(255 255 255 / 0.12);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    color: white;
+    box-sizing: border-box;
   }
 
   h1, h2, p {
@@ -68,97 +73,77 @@
     margin-top: 1rem;
   }
 
-  /* Kreuz-Linien - etwas feiner und weiter "außen" positioniert wie am Anfang */
-  .cross-line {
+  /* Echte Kreuze mit 2 Linien, jeweils 10px lang, 1px breit */
+  .cross {
     position: absolute;
-    background: rgba(255 255 255 / 0.25);
+    width: 10px;
+    height: 10px;
   }
-  /* Horizontal Linien */
-  .cross-line.horizontal {
+  .cross .line-horizontal,
+  .cross .line-vertical {
+    position: absolute;
+    background: rgba(255 255 255 / 0.3);
+  }
+  .cross .line-horizontal {
+    top: 50%;
+    left: 0;
+    width: 10px;
     height: 1px;
-    width: 25px;
+    transform: translateY(-50%);
   }
-  /* Vertikal Linien */
-  .cross-line.vertical {
+  .cross .line-vertical {
+    left: 50%;
+    top: 0;
     width: 1px;
-    height: 25px;
-  }
-
-  /* Obere Kante - links und rechts */
-  .cross-top-left-horizontal {
-    top: 0;
-    left: 10px;
-    transform: translateY(-50%);
-  }
-  .cross-top-left-vertical {
-    top: 10px;
-    left: 0;
+    height: 10px;
     transform: translateX(-50%);
   }
 
-  .cross-top-right-horizontal {
+  /* Position der Kreuze jeweils an Kanten von blur-container */
+  /* Abstand ca. wie padding (3rem = 48px) */
+  /* Oben links */
+  .cross-top-left {
     top: 0;
-    right: 10px;
+    left: 48px;
     transform: translateY(-50%);
   }
-  .cross-top-right-vertical {
-    top: 10px;
-    right: 0;
-    transform: translateX(50%);
+  /* Oben rechts */
+  .cross-top-right {
+    top: 0;
+    right: 48px;
+    transform: translateY(-50%);
   }
-
-  /* Untere Kante - links und rechts */
-  .cross-bottom-left-horizontal {
+  /* Unten links */
+  .cross-bottom-left {
     bottom: 0;
-    left: 10px;
+    left: 48px;
     transform: translateY(50%);
   }
-  .cross-bottom-left-vertical {
-    bottom: 10px;
-    left: 0;
-    transform: translateX(-50%);
-  }
-
-  .cross-bottom-right-horizontal {
+  /* Unten rechts */
+  .cross-bottom-right {
     bottom: 0;
-    right: 10px;
+    right: 48px;
     transform: translateY(50%);
   }
-  .cross-bottom-right-vertical {
-    bottom: 10px;
-    right: 0;
-    transform: translateX(50%);
-  }
 
-  /* Responsive */
+  /* Responsive Anpassung */
   @media (max-width: 600px) {
     .content-block {
       padding: 2rem 1.5rem;
     }
+    .blur-container {
+      padding: 1.5rem 2rem;
+    }
+    .cross-top-left, .cross-top-right,
+    .cross-bottom-left, .cross-bottom-right {
+      left: 24px !important;
+      right: 24px !important;
+    }
     iframe.content-embed {
       max-height: 180px;
     }
-    .cross-line.horizontal {
-      width: 20px;
-    }
-    .cross-line.vertical {
-      height: 20px;
-    }
-    .cross-top-left-horizontal,
-    .cross-top-right-horizontal,
-    .cross-bottom-left-horizontal,
-    .cross-bottom-right-horizontal {
-      left: 7px;
-      right: 7px;
-    }
-    .cross-top-left-vertical,
-    .cross-top-right-vertical,
-    .cross-bottom-left-vertical,
-    .cross-bottom-right-vertical {
-      top: 7px;
-      bottom: 7px;
-    }
   }
+
 </style>
 </head>
 <body>
@@ -166,58 +151,82 @@
   <!-- Hintergrund -->
   <iframe class="background-iframe" src="https://paulkimmerl.github.io/frakta/" allowfullscreen></iframe>
 
-  <!-- Scroll Container mit Snap -->
+  <!-- Scroll Container -->
   <div class="scroll-container">
 
     <!-- Block 1 -->
     <section class="content-block">
-      <div class="cross-line horizontal cross-top-left-horizontal"></div>
-      <div class="cross-line vertical cross-top-left-vertical"></div>
-      <div class="cross-line horizontal cross-top-right-horizontal"></div>
-      <div class="cross-line vertical cross-top-right-vertical"></div>
-      <div class="cross-line horizontal cross-bottom-left-horizontal"></div>
-      <div class="cross-line vertical cross-bottom-left-vertical"></div>
-      <div class="cross-line horizontal cross-bottom-right-horizontal"></div>
-      <div class="cross-line vertical cross-bottom-right-vertical"></div>
+      <div class="blur-container">
+        <div class="cross cross-top-left">
+          <div class="line-horizontal"></div>
+          <div class="line-vertical"></div>
+        </div>
+        <div class="cross cross-top-right">
+          <div class="line-horizontal"></div>
+          <div class="line-vertical"></div>
+        </div>
+        <div class="cross cross-bottom-left">
+          <div class="line-horizontal"></div>
+          <div class="line-vertical"></div>
+        </div>
+        <div class="cross cross-bottom-right">
+          <div class="line-horizontal"></div>
+          <div class="line-vertical"></div>
+        </div>
 
-      <div class="content-inner">
         <h1>Frakta Fullpage Scroll</h1>
-        <p>Jeder Block nimmt den ganzen Viewport ein und scrollt zum nächsten Block mit Snap.</p>
+        <p>Der Blur-Effekt umgibt nur den Inhalt. Der Hintergrund bleibt sichtbar und unblurred an den Rändern.</p>
         <iframe class="content-embed" src="https://www.youtube.com/embed/dQw4w9WgXcQ" allowfullscreen></iframe>
       </div>
     </section>
 
     <!-- Block 2 -->
     <section class="content-block">
-      <div class="cross-line horizontal cross-top-left-horizontal"></div>
-      <div class="cross-line vertical cross-top-left-vertical"></div>
-      <div class="cross-line horizontal cross-top-right-horizontal"></div>
-      <div class="cross-line vertical cross-top-right-vertical"></div>
-      <div class="cross-line horizontal cross-bottom-left-horizontal"></div>
-      <div class="cross-line vertical cross-bottom-left-vertical"></div>
-      <div class="cross-line horizontal cross-bottom-right-horizontal"></div>
-      <div class="cross-line vertical cross-bottom-right-vertical"></div>
+      <div class="blur-container">
+        <div class="cross cross-top-left">
+          <div class="line-horizontal"></div>
+          <div class="line-vertical"></div>
+        </div>
+        <div class="cross cross-top-right">
+          <div class="line-horizontal"></div>
+          <div class="line-vertical"></div>
+        </div>
+        <div class="cross cross-bottom-left">
+          <div class="line-horizontal"></div>
+          <div class="line-vertical"></div>
+        </div>
+        <div class="cross cross-bottom-right">
+          <div class="line-horizontal"></div>
+          <div class="line-vertical"></div>
+        </div>
 
-      <div class="content-inner">
         <h2>Viel Platz für den Hintergrund</h2>
-        <p>Nur ein Block sichtbar, Scroll Snap sorgt für feste Positionen.</p>
+        <p>Blur ist nur innerhalb des Inhaltsblocks. Unten am Viewport sieht man den klaren Hintergrund.</p>
       </div>
     </section>
 
     <!-- Block 3 -->
     <section class="content-block">
-      <div class="cross-line horizontal cross-top-left-horizontal"></div>
-      <div class="cross-line vertical cross-top-left-vertical"></div>
-      <div class="cross-line horizontal cross-top-right-horizontal"></div>
-      <div class="cross-line vertical cross-top-right-vertical"></div>
-      <div class="cross-line horizontal cross-bottom-left-horizontal"></div>
-      <div class="cross-line vertical cross-bottom-left-vertical"></div>
-      <div class="cross-line horizontal cross-bottom-right-horizontal"></div>
-      <div class="cross-line vertical cross-bottom-right-vertical"></div>
+      <div class="blur-container">
+        <div class="cross cross-top-left">
+          <div class="line-horizontal"></div>
+          <div class="line-vertical"></div>
+        </div>
+        <div class="cross cross-top-right">
+          <div class="line-horizontal"></div>
+          <div class="line-vertical"></div>
+        </div>
+        <div class="cross cross-bottom-left">
+          <div class="line-horizontal"></div>
+          <div class="line-vertical"></div>
+        </div>
+        <div class="cross cross-bottom-right">
+          <div class="line-horizontal"></div>
+          <div class="line-vertical"></div>
+        </div>
 
-      <div class="content-inner">
         <h2>Kontakt & Karte</h2>
-        <p>Auch eingebettete Karten funktionieren perfekt.</p>
+        <p>Eingebettete Karten funktionieren perfekt.</p>
         <iframe class="content-embed" src="https://openstreetmap.org/export/embed.html?bbox=13.4,52.49,13.42,52.5&layer=mapnik" allowfullscreen></iframe>
       </div>
     </section>
