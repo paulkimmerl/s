@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Scrollbare Infoseite</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html, body {
+      height: 100%;
+      font-family: sans-serif;
+      overflow-y: scroll;
+    }
+
+    body {
+      background: url('https://picsum.photos/1920/1080?blur') no-repeat center center fixed;
+      background-size: cover;
+      position: relative;
+    }
+
+    .content-wrapper {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 2rem 1rem;
+    }
+
+    .content-block {
+      width: 100%;
+      max-width: 800px;
+      margin: 4rem 0;
+      padding: 2rem;
+      backdrop-filter: blur(12px);
+      background-color: rgba(255, 255, 255, 0.1);
+      border-radius: 16px;
+      position: relative;
+    }
+
+    .corner-cross {
+      position: absolute;
+      width: 12px;
+      height: 12px;
+      color: white;
+      font-weight: bold;
+      font-size: 14px;
+      line-height: 12px;
+    }
+
+    .cross-top-left {
+      top: -12px;
+      left: 1rem;
+    }
+
+    .cross-top-right {
+      top: -12px;
+      right: 1rem;
+    }
+
+    .cross-bottom-left {
+      bottom: -12px;
+      left: 1rem;
+    }
+
+    .cross-bottom-right {
+      bottom: -12px;
+      right: 1rem;
+    }
+
+    .text-block {
+      color: white;
+      margin-bottom: 1.5rem;
+    }
+
+    iframe {
+      width: 100%;
+      height: 300px;
+      border: none;
+      border-radius: 8px;
+    }
+
+    @media (max-width: 600px) {
+      .content-block {
+        padding: 1rem;
+        margin: 2rem 0;
+      }
+
+      iframe {
+        height: 200px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="content-wrapper">
+    <!-- Slide 1 -->
+    <div class="content-block">
+      <div class="corner-cross cross-top-left">✚</div>
+      <div class="corner-cross cross-top-right">✚</div>
+
+      <div class="text-block">
+        <h1>Willkommen!</h1>
+        <p>Dies ist ein Beispiel für eine minimalistische Webseite mit einem fixierten Hintergrund und einem Blur-Overlay, das sich dynamisch an den Inhalt anpasst.</p>
+      </div>
+
+      <iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ" allowfullscreen></iframe>
+
+      <div class="corner-cross cross-bottom-left">✚</div>
+      <div class="corner-cross cross-bottom-right">✚</div>
+    </div>
+
+    <!-- Slide 2 -->
+    <div class="content-block">
+      <div class="corner-cross cross-top-left">✚</div>
+      <div class="corner-cross cross-top-right">✚</div>
+
+      <div class="text-block">
+        <h2>Weitere Informationen</h2>
+        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque pulvinar posuere lacus, at fermentum metus euismod sit amet.</p>
+        <p>Phasellus non risus nec nulla congue faucibus. Integer fringilla fermentum velit, in finibus nulla cursus eget.</p>
+      </div>
+
+      <div class="corner-cross cross-bottom-left">✚</div>
+      <div class="corner-cross cross-bottom-right">✚</div>
+    </div>
+
+    <!-- Slide 3 -->
+    <div class="content-block">
+      <div class="corner-cross cross-top-left">✚</div>
+      <div class="corner-cross cross-top-right">✚</div>
+
+      <div class="text-block">
+        <h2>Kontakt</h2>
+        <p>Du kannst uns unter info@example.com erreichen oder uns auf sozialen Medien folgen.</p>
+      </div>
+
+      <iframe src="https://openstreetmap.org/export/embed.html?bbox=13.4,52.49,13.42,52.5&layer=mapnik" allowfullscreen></iframe>
+
+      <div class="corner-cross cross-bottom-left">✚</div>
+      <div class="corner-cross cross-bottom-right">✚</div>
+    </div>
+  </div>
+</body>
+</html>
