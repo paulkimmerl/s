@@ -3,20 +3,17 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Frakta Interaktive Seite</title>
+<title>Frakta Fullpage Scroll</title>
 <style>
   /* Reset */
   * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
+    margin: 0; padding: 0; box-sizing: border-box;
   }
-
   html, body {
     height: 100%;
-    background: black;
+    overflow: hidden; /* Verhindert normales Scrollen, wir benutzen Scroll Snap auf Container */
     font-family: Arial, sans-serif;
-    overflow-x: hidden;
+    background: black;
   }
 
   /* Interaktiver Hintergrund */
@@ -28,35 +25,35 @@
     z-index: 0;
   }
 
-  /* Wrapper der Content-Blöcke */
-  .content-wrapper {
+  /* Scroll Container mit Snap */
+  .scroll-container {
     position: relative;
     z-index: 1;
-    pointer-events: none; /* damit Klicks durchgehen, außer über Inhalt */
-    padding: 8vh 0;
+    height: 100vh;
+    overflow-y: scroll;
+    scroll-snap-type: y mandatory;
+    -webkit-overflow-scrolling: touch;
   }
 
-  /* Jeder Content-Block */
+  /* Jeder Vollbild Content Block */
   .content-block {
-    pointer-events: auto; /* macht den Block interaktiv */
-    width: 100%;
-    max-width: 1200px;
-    margin: 0 auto 10vh; /* unten viel Abstand */
+    scroll-snap-align: start;
+    width: 100vw;
+    height: 100vh;
     background: rgba(255 255 255 / 0.12);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
     color: white;
-    padding: 2rem 3rem;
     position: relative;
-    border-radius: 0;
-    display: block;
+    padding: 3rem 2rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
   }
 
-  /* Innerer Bereich mit max Breite */
   .content-inner {
     max-width: 900px;
     width: 100%;
-    margin: 0 auto;
   }
 
   h1, h2, p {
@@ -71,68 +68,64 @@
     margin-top: 1rem;
   }
 
-  /* Feine Kreuzlinien als kleine "L"-Form oben links, oben rechts, unten links, unten rechts */
+  /* Kreuz-Linien - etwas feiner und weiter "außen" positioniert wie am Anfang */
   .cross-line {
     position: absolute;
     background: rgba(255 255 255 / 0.25);
   }
-
-  /* Horizontal Linien - 25px lang, 1px dick */
+  /* Horizontal Linien */
   .cross-line.horizontal {
     height: 1px;
     width: 25px;
   }
-
-  /* Vertikal Linien - 25px lang, 1px dick */
+  /* Vertikal Linien */
   .cross-line.vertical {
     width: 1px;
     height: 25px;
   }
 
-  /* Oben links */
+  /* Obere Kante - links und rechts */
   .cross-top-left-horizontal {
     top: 0;
-    left: 20px;
+    left: 10px;
     transform: translateY(-50%);
   }
   .cross-top-left-vertical {
-    top: 20px;
+    top: 10px;
     left: 0;
     transform: translateX(-50%);
   }
 
-  /* Oben rechts */
   .cross-top-right-horizontal {
     top: 0;
-    right: 20px;
+    right: 10px;
     transform: translateY(-50%);
   }
   .cross-top-right-vertical {
-    top: 20px;
+    top: 10px;
     right: 0;
     transform: translateX(50%);
   }
 
-  /* Unten links */
+  /* Untere Kante - links und rechts */
   .cross-bottom-left-horizontal {
     bottom: 0;
-    left: 20px;
+    left: 10px;
     transform: translateY(50%);
   }
   .cross-bottom-left-vertical {
-    bottom: 20px;
+    bottom: 10px;
     left: 0;
     transform: translateX(-50%);
   }
 
-  /* Unten rechts */
   .cross-bottom-right-horizontal {
     bottom: 0;
-    right: 20px;
+    right: 10px;
     transform: translateY(50%);
   }
   .cross-bottom-right-vertical {
-    bottom: 20px;
+    bottom: 10px;
     right: 0;
     transform: translateX(50%);
   }
@@ -140,33 +133,30 @@
   /* Responsive */
   @media (max-width: 600px) {
     .content-block {
-      padding: 1.5rem 1.5rem;
-      margin-bottom: 8vh;
+      padding: 2rem 1.5rem;
     }
     iframe.content-embed {
-      max-height: 200px;
+      max-height: 180px;
     }
-
     .cross-line.horizontal {
       width: 20px;
     }
     .cross-line.vertical {
       height: 20px;
     }
-
     .cross-top-left-horizontal,
     .cross-top-right-horizontal,
     .cross-bottom-left-horizontal,
     .cross-bottom-right-horizontal {
-      left: 15px;
-      right: 15px;
+      left: 7px;
+      right: 7px;
     }
     .cross-top-left-vertical,
     .cross-top-right-vertical,
     .cross-bottom-left-vertical,
     .cross-bottom-right-vertical {
-      top: 15px;
-      bottom: 15px;
+      top: 7px;
+      bottom: 7px;
     }
   }
 </style>
@@ -176,26 +166,23 @@
   <!-- Hintergrund -->
   <iframe class="background-iframe" src="https://paulkimmerl.github.io/frakta/" allowfullscreen></iframe>
 
-  <div class="content-wrapper">
+  <!-- Scroll Container mit Snap -->
+  <div class="scroll-container">
 
     <!-- Block 1 -->
     <section class="content-block">
-      <!-- Kreuz oben links -->
       <div class="cross-line horizontal cross-top-left-horizontal"></div>
       <div class="cross-line vertical cross-top-left-vertical"></div>
-      <!-- Kreuz oben rechts -->
       <div class="cross-line horizontal cross-top-right-horizontal"></div>
       <div class="cross-line vertical cross-top-right-vertical"></div>
-      <!-- Kreuz unten links -->
       <div class="cross-line horizontal cross-bottom-left-horizontal"></div>
       <div class="cross-line vertical cross-bottom-left-vertical"></div>
-      <!-- Kreuz unten rechts -->
       <div class="cross-line horizontal cross-bottom-right-horizontal"></div>
       <div class="cross-line vertical cross-bottom-right-vertical"></div>
 
       <div class="content-inner">
-        <h1>Frakta Interaktive Seite</h1>
-        <p>Der Blur-Block passt sich genau der Größe des Inhalts an. Dazwischen ist viel Platz für den Hintergrund.</p>
+        <h1>Frakta Fullpage Scroll</h1>
+        <p>Jeder Block nimmt den ganzen Viewport ein und scrollt zum nächsten Block mit Snap.</p>
         <iframe class="content-embed" src="https://www.youtube.com/embed/dQw4w9WgXcQ" allowfullscreen></iframe>
       </div>
     </section>
@@ -213,7 +200,7 @@
 
       <div class="content-inner">
         <h2>Viel Platz für den Hintergrund</h2>
-        <p>Der Hintergrund bleibt sichtbar und interaktiv, da die Blöcke nur so groß sind wie ihr Inhalt.</p>
+        <p>Nur ein Block sichtbar, Scroll Snap sorgt für feste Positionen.</p>
       </div>
     </section>
 
@@ -230,7 +217,7 @@
 
       <div class="content-inner">
         <h2>Kontakt & Karte</h2>
-        <p>Auch eingebettete Inhalte wie Karten funktionieren.</p>
+        <p>Auch eingebettete Karten funktionieren perfekt.</p>
         <iframe class="content-embed" src="https://openstreetmap.org/export/embed.html?bbox=13.4,52.49,13.42,52.5&layer=mapnik" allowfullscreen></iframe>
       </div>
     </section>
