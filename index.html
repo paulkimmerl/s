@@ -1,309 +1,307 @@
 <!DOCTYPE html>
 <html lang="de">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Frakta Scrollseite mit Scrollbar</title>
-<style>
-  * {
-    margin: 0; padding: 0; box-sizing: border-box;
-  }
-  html, body {
-    height: 100%;
-    font-family: sans-serif;
-    background: black;
-    scroll-behavior: smooth;
-    overflow: hidden;
-  }
-  .scroll-container {
-    height: 100vh;
-    overflow-y: scroll;
-    scroll-snap-type: y mandatory;
-  }
-  section.slide {
-    height: 100vh;
-    display: flex;
-    align-items: flex-end;
-    justify-content: center;
-    scroll-snap-align: start;
-    position: relative;
-    z-index: 1;
-    pointer-events: none; /* nur Blur-Box interaktiv */
-  }
-  .background {
-    position: fixed;
-    top: 0; left: 0;
-    width: 100vw; height: 100vh;
-    z-index: 0;
-    pointer-events: auto;
-  }
-  .background iframe {
-    width: 100%; height: 100%;
-    border: none;
-  }
-  .blur-box {
-    width: 100%;
-    max-width: 900px;
-    background: rgba(255 255 255 / 0.1);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    color: white;
-    padding: 2rem 3.25rem 2rem 2rem; /* rechts Platz für Scrollbar + Kreuz */
-    margin-bottom: 2rem;
-    position: relative;
-    pointer-events: auto; /* Interaktion möglich */
-    user-select: text;
-  }
-  .cross-holder {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    top: 0; left: 0;
-    pointer-events: none;
-  }
-  .cross {
-    position: absolute;
-    width: 16px;
-    height: 16px;
-  }
-  .cross::before, .cross::after {
-    content: '';
-    position: absolute;
-    background: white;
-    opacity: 0.3;
-  }
-  .cross::before {
-    width: 100%;
-    height: 1px;
-    top: 50%;
-    left: 0;
-    transform: translateY(-50%);
-  }
-  .cross::after {
-    height: 100%;
-    width: 1px;
-    top: 0;
-    left: 50%;
-    transform: translateX(-50%);
-  }
-  .top-left    { top: -8px; left: 2rem; }
-  .top-right   { top: -8px; right: 3.25rem; }
-  .bottom-left { bottom: -8px; left: 2rem; }
-  .bottom-right{ bottom: -8px; right: 3.25rem; }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Frakta mit fixiertem Header & Fullpage Scroll</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    html, body {
+      height: 100%;
+      font-family: sans-serif;
+      background: black;
+      color: white;
+      user-select: none;
+      overflow: hidden;
+    }
 
-  h1, h2, p {
-    margin-bottom: 1rem;
-  }
-  iframe.embed {
-    width: 100%;
-    height: 300px;
-    border: none;
-    margin-top: 1rem;
-  }
+    /* Hintergrund */
+    .background {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      width: 100vw;
+      height: 100vh;
+      overflow: hidden;
+      z-index: 0;
+      pointer-events: auto;
+      transform: translate(-50%, -50%);
+      background: black;
+    }
+    .background iframe {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      min-width: 100%;
+      min-height: 100%;
+      width: auto;
+      height: auto;
+      transform: translate(-50%, -50%);
+      border: none;
+      pointer-events: auto;
+    }
 
-  /* Scrollbar rechts neben Text/Kreuz in Blur-Box */
-  .scrollbar-container {
-    position: absolute;
-    top: 2rem; /* Padding oben */
-    right: 1rem; /* Zwischen Text/Kreuz und Rand */
-    width: 12px;
-    height: calc(100% - 4rem); /* Höhe minus padding oben/unten */
-    background: rgba(255 255 255 / 0.1);
-    border-radius: 10px;
-    cursor: ns-resize;
-    user-select: none;
-  }
-  .scrollbar-line {
-    position: absolute;
-    top: 0; left: 50%;
-    transform: translateX(-50%);
-    width: 2px;
-    height: 100%;
-    background: rgba(255 255 255 / 0.25);
-    border-radius: 10px;
-  }
-  .scrollbar-cross {
-    position: absolute;
-    left: 50%;
-    width: 14px;
-    height: 14px;
-    background: transparent;
-    pointer-events: auto; /* dragbar */
-    cursor: ns-resize;
-    transform: translate(-50%, 0);
-  }
-  .scrollbar-cross::before,
-  .scrollbar-cross::after {
-    content: '';
-    position: absolute;
-    background: white;
-    opacity: 0.3;
-  }
-  .scrollbar-cross::before {
-    width: 100%;
-    height: 1px;
-    top: 50%;
-    left: 0;
-    transform: translateY(-50%);
-  }
-  .scrollbar-cross::after {
-    height: 100%;
-    width: 1px;
-    top: 0;
-    left: 50%;
-    transform: translateX(-50%);
-  }
+    /* Header fixiert oben */
+    header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      max-height: 80px;
+      background: rgba(255 255 255 / 0.1);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem 2rem;
+      z-index: 10;
+      user-select: text;
+      pointer-events: auto;
+      box-sizing: border-box;
+    }
+    /* Kreuze an den 4 Ecken im Header */
+    header .cross-holder {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      top: 0;
+      left: 0;
+      pointer-events: none;
+    }
+    header .cross {
+      position: absolute;
+      width: 16px;
+      height: 16px;
+    }
+    header .cross::before, header .cross::after {
+      content: '';
+      position: absolute;
+      background: white;
+      opacity: 0.3;
+    }
+    header .cross::before {
+      width: 100%;
+      height: 1px;
+      top: 50%;
+      left: 0;
+      transform: translateY(-50%);
+    }
+    header .cross::after {
+      height: 100%;
+      width: 1px;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+    }
+    header .top-left    { top: 0; left: 2rem; }
+    header .top-right   { top: 0; right: 2rem; }
+    header .bottom-left { bottom: 0; left: 2rem; }
+    header .bottom-right{ bottom: 0; right: 2rem; }
 
-  @media (max-width: 600px) {
+    /* Scrollcontainer mit Snap */
+    .scroll-container {
+      height: 100vh;
+      width: 100vw;
+      scroll-snap-type: y mandatory;
+      overflow-y: scroll;
+      overflow-x: hidden;
+      scroll-behavior: smooth;
+      padding-top: 80px; /* Platz für den Header */
+      z-index: 5;
+      position: relative;
+    }
+
+    /* Slides */
+    section.slide {
+      scroll-snap-align: end; /* am unteren Ende des Viewports ausrichten */
+      height: calc(100vh - 80px); /* Vollbild minus Header */
+      width: 100vw;
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+      pointer-events: auto;
+      padding-bottom: 2rem;
+      box-sizing: border-box;
+      position: relative;
+    }
+
     .blur-box {
-      padding: 1.5rem 2.75rem 1.5rem 1.5rem;
+      width: 100%;
+      max-width: 900px;
+      background: rgba(255 255 255 / 0.1);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      color: white;
+      padding: 2rem;
+      position: relative;
+      user-select: text;
+      pointer-events: auto;
+      border-radius: 0;
+      box-sizing: border-box;
     }
-    .top-left, .bottom-left {
-      left: 1rem;
+    /* Kreuze in den Ecken der blur-box */
+    .cross-holder {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      top: 0;
+      left: 0;
+      pointer-events: none;
     }
-    .top-right, .bottom-right {
-      right: 2.75rem;
+    .cross {
+      position: absolute;
+      width: 16px;
+      height: 16px;
     }
-    .scrollbar-container {
-      right: 0.75rem;
-      width: 10px;
-      height: calc(100% - 3rem);
-      top: 1.5rem;
+    .cross::before, .cross::after {
+      content: '';
+      position: absolute;
+      background: white;
+      opacity: 0.3;
     }
-  }
-</style>
+    .cross::before {
+      width: 100%;
+      height: 1px;
+      top: 50%;
+      left: 0;
+      transform: translateY(-50%);
+    }
+    .cross::after {
+      height: 100%;
+      width: 1px;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+    }
+    .top-left    { top: -8px; left: 2rem; }
+    .top-right   { top: -8px; right: 2rem; }
+    .bottom-left { bottom: -8px; left: 2rem; }
+    .bottom-right{ bottom: -8px; right: 2rem; }
+
+    h1, h2, p {
+      margin-bottom: 1rem;
+    }
+
+    iframe.embed {
+      width: 100%;
+      height: 300px;
+      border: none;
+      margin-top: 1rem;
+    }
+
+    @media (max-width: 600px) {
+      .blur-box {
+        padding: 1.5rem;
+      }
+      header .top-left, header .bottom-left, .top-left, .bottom-left {
+        left: 1rem;
+      }
+      header .top-right, header .bottom-right, .top-right, .bottom-right {
+        right: 1rem;
+      }
+    }
+  </style>
 </head>
 <body>
+  <div class="background">
+    <iframe src="https://paulkimmerl.github.io/frakta/" allowfullscreen></iframe>
+  </div>
 
-<div class="background">
-  <iframe src="https://paulkimmerl.github.io/frakta/" allowfullscreen></iframe>
-</div>
-
-<div class="scroll-container" id="scroll-container" tabindex="0">
-  <section class="slide">
-    <div class="blur-box">
-      <div class="cross-holder">
-        <div class="cross top-left"></div>
-        <div class="cross top-right"></div>
-        <div class="cross bottom-left"></div>
-        <div class="cross bottom-right"></div>
-      </div>
-      <h1>Frakta Projekt</h1>
-      <p>Scrollbare Seite mit sichtbarem, interaktivem Hintergrund und Content nur unten.</p>
-      <iframe class="embed" src="https://www.youtube.com/embed/dQw4w9WgXcQ" allowfullscreen></iframe>
-      <div class="scrollbar-container"></div>
+  <header>
+    <div class="cross-holder">
+      <div class="cross top-left"></div>
+      <div class="cross top-right"></div>
+      <div class="cross bottom-left"></div>
+      <div class="cross bottom-right"></div>
     </div>
-  </section>
+    <h1>Frakta Header</h1>
+  </header>
 
-  <section class="slide">
-    <div class="blur-box">
-      <div class="cross-holder">
-        <div class="cross top-left"></div>
-        <div class="cross top-right"></div>
-        <div class="cross bottom-left"></div>
-        <div class="cross bottom-right"></div>
+  <div class="scroll-container" id="scroll-container">
+    <section class="slide">
+      <div class="blur-box">
+        <div class="cross-holder">
+          <div class="cross top-left"></div>
+          <div class="cross top-right"></div>
+          <div class="cross bottom-left"></div>
+          <div class="cross bottom-right"></div>
+        </div>
+        <h1>Frakta Projekt</h1>
+        <p>Originale Frakta-Visualisierung ohne Filtereffekt.</p>
+        <iframe class="embed" src="https://www.youtube.com/embed/dQw4w9WgXcQ" allowfullscreen></iframe>
       </div>
-      <h2>Hintergrund bleibt sichtbar</h2>
-      <p>Der Blur-Block ist nur so hoch wie der Inhalt.</p>
-      <div class="scrollbar-container"></div>
-    </div>
-  </section>
+    </section>
 
-  <section class="slide">
-    <div class="blur-box">
-      <div class="cross-holder">
-        <div class="cross top-left"></div>
-        <div class="cross top-right"></div>
-        <div class="cross bottom-left"></div>
-        <div class="cross bottom-right"></div>
+    <section class="slide">
+      <div class="blur-box">
+        <div class="cross-holder">
+          <div class="cross top-left"></div>
+          <div class="cross top-right"></div>
+          <div class="cross bottom-left"></div>
+          <div class="cross bottom-right"></div>
+        </div>
+        <h2>Zweite Slide</h2>
+        <p>Kein Filter, nur reiner Hintergrund.</p>
       </div>
-      <h2>Nur eine Box pro Seite</h2>
-      <p>Mehr Raum für den Hintergrund, Interaktion bleibt möglich.</p>
-      <div class="scrollbar-container"></div>
-    </div>
-  </section>
-</div>
+    </section>
 
-<script>
-  const scrollContainer = document.getElementById('scroll-container');
-  const blurBoxes = document.querySelectorAll('.blur-box');
+    <section class="slide">
+      <div class="blur-box">
+        <div class="cross-holder">
+          <div class="cross top-left"></div>
+          <div class="cross top-right"></div>
+          <div class="cross bottom-left"></div>
+          <div class="cross bottom-right"></div>
+        </div>
+        <h2>Dritte Slide</h2>
+        <p>Weiterer Content hier.</p>
+      </div>
+    </section>
+  </div>
 
-  blurBoxes.forEach(blurBox => {
-    const scrollbar = blurBox.querySelector('.scrollbar-container');
+  <script>
+    // Scroll snapping funktioniert per CSS scroll-snap-type + scroll-snap-align
 
-    // scroll line + cross erstellen
-    const line = document.createElement('div');
-    line.className = 'scrollbar-line';
-    scrollbar.appendChild(line);
+    // Optional: Keyboard Navigation (Pfeiltasten)
+    const scrollContainer = document.getElementById('scroll-container');
+    const slides = scrollContainer.querySelectorAll('section.slide');
 
-    const cross = document.createElement('div');
-    cross.className = 'scrollbar-cross';
-    scrollbar.appendChild(cross);
+    window.addEventListener('keydown', e => {
+      if (e.key === 'ArrowDown' || e.key === 'PageDown') {
+        e.preventDefault();
+        const nextIndex = Math.min(currentIndex() + 1, slides.length -1);
+        scrollToSlide(nextIndex);
+      }
+      if (e.key === 'ArrowUp' || e.key === 'PageUp') {
+        e.preventDefault();
+        const prevIndex = Math.max(currentIndex() - 1, 0);
+        scrollToSlide(prevIndex);
+      }
+    });
 
-    let dragging = false;
-
-    // Update Position Kreuz basierend auf scroll
-    function updateCrossPosition() {
-      const maxScroll = scrollContainer.scrollHeight - scrollContainer.clientHeight;
+    function currentIndex(){
       const scrollTop = scrollContainer.scrollTop;
-      let ratio = maxScroll ? scrollTop / maxScroll : 0;
-
-      const scrollbarHeight = scrollbar.clientHeight;
-      const crossHeight = cross.clientHeight;
-      let y = ratio * (scrollbarHeight - crossHeight);
-      y = Math.min(Math.max(0, y), scrollbarHeight - crossHeight);
-
-      cross.style.top = y + 'px';
+      const vh = window.innerHeight - 80; // Header abziehen
+      return Math.round(scrollTop / vh);
     }
 
-    updateCrossPosition();
+    function scrollToSlide(index){
+      const vh = window.innerHeight - 80;
+      scrollContainer.scrollTo({
+        top: vh * index,
+        behavior: 'smooth'
+      });
+    }
 
-    scrollContainer.addEventListener('scroll', updateCrossPosition);
+    // Optional: Touch Swipe Navigation (Scroll funktioniert nativ)
 
-    // Drag Funktionalität
-    cross.addEventListener('mousedown', e => {
-      e.preventDefault();
-      dragging = true;
-    });
-    document.addEventListener('mouseup', () => {
-      dragging = false;
-    });
-    document.addEventListener('mousemove', e => {
-      if (!dragging) return;
-      const rect = scrollbar.getBoundingClientRect();
-      let y = e.clientY - rect.top;
-      const maxY = scrollbar.clientHeight - cross.clientHeight;
-      y = Math.min(Math.max(0, y), maxY);
-      cross.style.top = y + 'px';
-
-      const ratio = y / maxY;
-      const maxScroll = scrollContainer.scrollHeight - scrollContainer.clientHeight;
-      scrollContainer.scrollTop = ratio * maxScroll;
-    });
-
-    // Touch Events fürs Draggen auf mobilen Geräten
-    cross.addEventListener('touchstart', e => {
-      e.preventDefault();
-      dragging = true;
-    });
-    document.addEventListener('touchend', e => {
-      dragging = false;
-    });
-    document.addEventListener('touchmove', e => {
-      if (!dragging) return;
-      const touch = e.touches[0];
-      const rect = scrollbar.getBoundingClientRect();
-      let y = touch.clientY - rect.top;
-      const maxY = scrollbar.clientHeight - cross.clientHeight;
-      y = Math.min(Math.max(0, y), maxY);
-      cross.style.top = y + 'px';
-
-      const ratio = y / maxY;
-      const maxScroll = scrollContainer.scrollHeight - scrollContainer.clientHeight;
-      scrollContainer.scrollTop = ratio * maxScroll;
-    });
-  });
-</script>
-
+    // Falls du noch weitere Steuerungen willst, sag Bescheid!
+  </script>
 </body>
 </html>
