@@ -29,7 +29,7 @@ section.slide {
   justify-content: center;
   scroll-snap-align: start;
   position: relative;
-  z-index: 1;
+  z-index: 2;
   pointer-events: none;
 }
 
@@ -56,24 +56,23 @@ section.slide {
   left: 0;
   width: 100vw;
   height: 100vh;
-  z-index: 0;
+  z-index: 1;
   pointer-events: none;
   transition: opacity 0.8s ease;
 }
 
 .effect-feedback {
-  mix-blend-mode: difference;
   background: repeating-linear-gradient(45deg, rgba(255,255,255,0.05) 0px, rgba(255,255,255,0.05) 1px, transparent 1px, transparent 4px);
 }
 
 .effect-color {
-  mix-blend-mode: color;
-  background: rgba(255, 0, 100, 0.1);
+  background: rgba(255, 0, 100, 0.08);
 }
 
 .effect-bloom {
-  backdrop-filter: brightness(1.5) blur(3px);
-  -webkit-backdrop-filter: brightness(1.5) blur(3px);
+  background: rgba(255,255,255,0.04);
+  backdrop-filter: brightness(1.3) blur(3px);
+  -webkit-backdrop-filter: brightness(1.3) blur(3px);
 }
 
 .blur-box {
