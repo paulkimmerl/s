@@ -138,7 +138,7 @@
       backdrop-filter: blur(12px);
       -webkit-backdrop-filter: blur(12px);
       color: white;
-      padding: 2rem;
+      padding: 2rem 3.25rem 2rem 2rem; /* Rechts extra Platz für Scrollbar */
       position: relative;
       user-select: text;
       pointer-events: auto;
@@ -195,15 +195,75 @@
       margin-top: 1rem;
     }
 
+    /* Dünne Scrollbar rechts in blur-box */
+    .scrollbar-container {
+      position: absolute;
+      top: 2rem; /* Gleicher Padding oben */
+      right: 1rem;
+      width: 12px;
+      height: calc(100% - 4rem); /* Padding oben + unten abziehen */
+      background: rgba(255 255 255 / 0.1);
+      border-radius: 10px;
+      cursor: ns-resize;
+      user-select: none;
+      pointer-events: auto;
+    }
+    .scrollbar-line {
+      position: absolute;
+      top: 0; left: 50%;
+      transform: translateX(-50%);
+      width: 2px;
+      height: 100%;
+      background: rgba(255 255 255 / 0.25);
+      border-radius: 10px;
+    }
+    .scrollbar-cross {
+      position: absolute;
+      left: 50%;
+      width: 14px;
+      height: 14px;
+      background: transparent;
+      pointer-events: auto;
+      cursor: ns-resize;
+      transform: translate(-50%, 0);
+    }
+    .scrollbar-cross::before,
+    .scrollbar-cross::after {
+      content: '';
+      position: absolute;
+      background: white;
+      opacity: 0.3;
+    }
+    .scrollbar-cross::before {
+      width: 100%;
+      height: 1px;
+      top: 50%;
+      left: 0;
+      transform: translateY(-50%);
+    }
+    .scrollbar-cross::after {
+      height: 100%;
+      width: 1px;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+    }
+
     @media (max-width: 600px) {
       .blur-box {
-        padding: 1.5rem;
+        padding: 1.5rem 2.75rem 1.5rem 1.5rem;
       }
       header .top-left, header .bottom-left, .top-left, .bottom-left {
         left: 1rem;
       }
       header .top-right, header .bottom-right, .top-right, .bottom-right {
         right: 1rem;
+      }
+      .scrollbar-container {
+        right: 0.75rem;
+        width: 10px;
+        height: calc(100% - 3rem);
+        top: 1.5rem;
       }
     }
   </style>
@@ -235,6 +295,7 @@
         <h1>Frakta Projekt</h1>
         <p>Originale Frakta-Visualisierung ohne Filtereffekt.</p>
         <iframe class="embed" src="https://www.youtube.com/embed/dQw4w9WgXcQ" allowfullscreen></iframe>
+        <div class="scrollbar-container"></div>
       </div>
     </section>
 
@@ -248,6 +309,7 @@
         </div>
         <h2>Zweite Slide</h2>
         <p>Kein Filter, nur reiner Hintergrund.</p>
+        <div class="scrollbar-container"></div>
       </div>
     </section>
 
@@ -261,47 +323,5 @@
         </div>
         <h2>Dritte Slide</h2>
         <p>Weiterer Content hier.</p>
+        <div class="scrollbar-container"></div>
       </div>
-    </section>
-  </div>
-
-  <script>
-    // Scroll snapping funktioniert per CSS scroll-snap-type + scroll-snap-align
-
-    // Optional: Keyboard Navigation (Pfeiltasten)
-    const scrollContainer = document.getElementById('scroll-container');
-    const slides = scrollContainer.querySelectorAll('section.slide');
-
-    window.addEventListener('keydown', e => {
-      if (e.key === 'ArrowDown' || e.key === 'PageDown') {
-        e.preventDefault();
-        const nextIndex = Math.min(currentIndex() + 1, slides.length -1);
-        scrollToSlide(nextIndex);
-      }
-      if (e.key === 'ArrowUp' || e.key === 'PageUp') {
-        e.preventDefault();
-        const prevIndex = Math.max(currentIndex() - 1, 0);
-        scrollToSlide(prevIndex);
-      }
-    });
-
-    function currentIndex(){
-      const scrollTop = scrollContainer.scrollTop;
-      const vh = window.innerHeight - 80; // Header abziehen
-      return Math.round(scrollTop / vh);
-    }
-
-    function scrollToSlide(index){
-      const vh = window.innerHeight - 80;
-      scrollContainer.scrollTo({
-        top: vh * index,
-        behavior: 'smooth'
-      });
-    }
-
-    // Optional: Touch Swipe Navigation (Scroll funktioniert nativ)
-
-    // Falls du noch weitere Steuerungen willst, sag Bescheid!
-  </script>
-</body>
-</html>
