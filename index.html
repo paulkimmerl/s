@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Frakta Interaktive Scrollseite</title>
+  <title>Frakta Scrollseite</title>
   <style>
     * {
       margin: 0;
@@ -15,29 +15,33 @@
       height: 100%;
       font-family: sans-serif;
       overflow-x: hidden;
-      position: relative;
+      background: black;
     }
 
-    /* Interaktiver Hintergrund */
+    /* Hintergrund bleibt interaktiv */
     .background-iframe {
       position: fixed;
       top: 0;
       left: 0;
       width: 100vw;
       height: 100vh;
-      z-index: -1;
       border: none;
+      z-index: 0;
     }
 
     .content-wrapper {
+      position: relative;
+      z-index: 1;
+      pointer-events: none; /* Inhalt blockiert keine Maus */
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 5rem; /* Abstand zwischen Blöcken */
+      gap: 6rem;
       padding: 6rem 0;
     }
 
     .content-block {
+      pointer-events: auto; /* Inhalt bleibt bedienbar */
       width: 100%;
       max-width: 900px;
       padding: 2rem;
@@ -49,12 +53,12 @@
 
     .corner-cross {
       position: absolute;
-      width: 14px;
-      height: 14px;
-      font-size: 14px;
-      color: white;
-      font-weight: bold;
-      line-height: 14px;
+      font-size: 10px;
+      font-weight: normal;
+      color: rgba(255, 255, 255, 0.5);
+      line-height: 10px;
+      width: 10px;
+      height: 10px;
     }
 
     .cross-top-left {
@@ -86,7 +90,11 @@
       height: 300px;
       border: none;
       margin-top: 1rem;
-      border-radius: 8px;
+      border-radius: 6px;
+    }
+
+    h1, h2, p {
+      margin-bottom: 1rem;
     }
 
     @media (max-width: 600px) {
@@ -99,16 +107,16 @@
       }
 
       .corner-cross {
-        font-size: 12px;
-        width: 12px;
-        height: 12px;
+        font-size: 9px;
+        width: 9px;
+        height: 9px;
       }
     }
   </style>
 </head>
 <body>
 
-  <!-- Hintergrund als interaktives Live-IFrame -->
+  <!-- Interaktive Hintergrundseite -->
   <iframe
     class="background-iframe"
     src="https://paulkimmerl.github.io/frakta/"
@@ -123,7 +131,7 @@
       <div class="corner-cross cross-top-right">✚</div>
 
       <h1>Frakta Scrollseite</h1>
-      <p>Der Hintergrund ist interaktiv – du kannst ihn auch zwischen den Blöcken sehen und bedienen. Ideal für kreative WebGL-Experimente oder Visuals.</p>
+      <p>Der interaktive Hintergrund bleibt klickbar und sichtbar zwischen den Inhalten. Ideal für künstlerische oder visuelle Präsentationen.</p>
 
       <iframe
         class="content-embed"
@@ -141,7 +149,7 @@
       <div class="corner-cross cross-top-right">✚</div>
 
       <h2>Weitere Infos</h2>
-      <p>Zwischen den Blöcken bleibt immer Platz – das macht den Hintergrund sichtbar und bedienbar. Blöcke sind responsiv und passen sich jeder Bildschirmgröße an.</p>
+      <p>Die Blöcke haben Abstand und wirken schwebend. Touch, Maus und Interaktion mit dem Hintergrund sind jederzeit möglich.</p>
 
       <div class="corner-cross cross-bottom-left">✚</div>
       <div class="corner-cross cross-bottom-right">✚</div>
@@ -153,7 +161,7 @@
       <div class="corner-cross cross-top-right">✚</div>
 
       <h2>Karte & Kontakt</h2>
-      <p>Auch externe Inhalte wie Karten, Social Feeds oder Medien lassen sich integrieren.</p>
+      <p>Externe Inhalte lassen sich sauber integrieren. Du kannst hier z. B. auch interaktive Tools, Karten oder Galerien einbinden.</p>
 
       <iframe
         class="content-embed"
