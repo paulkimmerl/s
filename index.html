@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Frakta Interaktive Seite</title>
+  <title>Frakta Visual Scroll</title>
   <style>
     * {
       margin: 0;
@@ -13,45 +13,46 @@
 
     html, body {
       height: 100%;
-      font-family: sans-serif;
       background: black;
+      font-family: sans-serif;
       overflow-x: hidden;
     }
 
-    /* Interaktiver Hintergrund */
+    /* Interaktive Frakta-Seite im Hintergrund */
     .background-iframe {
       position: fixed;
       top: 0;
       left: 0;
       width: 100vw;
       height: 100vh;
-      border: none;
       z-index: 0;
+      border: none;
     }
 
-    /* Wrapper enthält Content, blockiert aber Interaktion nicht */
     .content-wrapper {
       position: relative;
       z-index: 1;
       pointer-events: none;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      padding: 8vh 0;
-      gap: 20vh; /* viel Raum zw. Blöcken */
     }
 
     .content-block {
       pointer-events: auto;
       width: 100%;
-      max-width: 900px;
-      padding: 2rem;
-      background: rgba(255, 255, 255, 0.15);
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
+      padding: 3rem 2rem;
+      background: rgba(255, 255, 255, 0.12);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
       color: white;
       position: relative;
-      min-height: 300px;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .content-inner {
+      max-width: 800px;
+      width: 100%;
     }
 
     h1, h2, p {
@@ -62,83 +63,98 @@
       width: 100%;
       height: 300px;
       border: none;
-      margin-top: 1rem;
       border-radius: 8px;
+      margin-top: 1rem;
     }
 
-    /* Dünne weiße Linien als "Kreuze" */
-    .edge-lines {
+    /* Feine, lange Kreuzlinien */
+    .line-horizontal,
+    .line-vertical {
       position: absolute;
-      width: 100%;
-      display: flex;
-      justify-content: space-between;
-      pointer-events: none;
+      background: rgba(255, 255, 255, 0.3);
     }
 
-    .edge-top, .edge-bottom {
+    .line-horizontal {
       height: 1px;
-      top: 0;
+      width: 40px;
     }
 
-    .edge-bottom {
-      top: auto;
-      bottom: 0;
-    }
-
-    .line {
-      width: 20px;
-      height: 1px;
-      background: rgba(255, 255, 255, 0.5);
-    }
-
-    .line.vert {
+    .line-vertical {
       width: 1px;
-      height: 20px;
-      background: rgba(255, 255, 255, 0.5);
+      height: 40px;
     }
 
-    .line-container {
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      height: 20px;
+    /* Positionierungen */
+    .line-top-left-h {
+      top: 0;
+      left: 2rem;
+      transform: translateY(-50%);
     }
 
-    .cross-left {
-      margin-left: 1rem;
+    .line-top-left-v {
+      top: 0;
+      left: 2rem;
+      transform: translate(-50%, 0);
     }
 
-    .cross-right {
-      margin-right: 1rem;
+    .line-top-right-h {
+      top: 0;
+      right: 2rem;
+      transform: translateY(-50%);
+    }
+
+    .line-top-right-v {
+      top: 0;
+      right: 2rem;
+      transform: translate(50%, 0);
+    }
+
+    .line-bottom-left-h {
+      bottom: 0;
+      left: 2rem;
+      transform: translateY(50%);
+    }
+
+    .line-bottom-left-v {
+      bottom: 0;
+      left: 2rem;
+      transform: translate(-50%, 0);
+    }
+
+    .line-bottom-right-h {
+      bottom: 0;
+      right: 2rem;
+      transform: translateY(50%);
+    }
+
+    .line-bottom-right-v {
+      bottom: 0;
+      right: 2rem;
+      transform: translate(50%, 0);
     }
 
     @media (max-width: 600px) {
       .content-block {
-        padding: 1.5rem;
+        padding: 2rem 1rem;
       }
 
       iframe.content-embed {
         height: 200px;
       }
 
-      .line {
-        width: 16px;
-        height: 1px;
+      .line-horizontal {
+        width: 30px;
       }
 
-      .line.vert {
-        height: 16px;
-      }
-
-      .line-container {
-        height: 16px;
+      .line-vertical {
+        height: 30px;
       }
     }
   </style>
 </head>
 <body>
 
-  <!-- Interaktiver Hintergrund -->
+  <!-- Interaktive Frakta -->
   <iframe
     class="background-iframe"
     src="https://paulkimmerl.github.io/frakta/"
@@ -149,64 +165,58 @@
 
     <!-- Block 1 -->
     <div class="content-block">
-      <!-- Obere Linien -->
-      <div class="edge-lines edge-top">
-        <div class="line cross-left"></div>
-        <div class="line cross-right"></div>
+      <div class="line-horizontal line-top-left-h"></div>
+      <div class="line-vertical line-top-left-v"></div>
+      <div class="line-horizontal line-top-right-h"></div>
+      <div class="line-vertical line-top-right-v"></div>
+
+      <div class="content-inner">
+        <h1>Frakta Interaktion</h1>
+        <p>Dieser Bereich nutzt den vollen Bildschirm aus, um dem Frakta-Hintergrund Raum zu geben. Der Inhalt ist bewusst reduziert.</p>
+        <iframe class="content-embed" src="https://www.youtube.com/embed/dQw4w9WgXcQ" allowfullscreen></iframe>
       </div>
 
-      <h1>Frakta Scrollseite</h1>
-      <p>Der interaktive Hintergrund bleibt frei nutzbar – der Abstand zwischen den Segmenten lässt Raum zum Erkunden.</p>
-
-      <iframe
-        class="content-embed"
-        src="https://www.youtube.com/embed/dQw4w9WgXcQ"
-        allowfullscreen
-      ></iframe>
-
-      <!-- Untere Linien -->
-      <div class="edge-lines edge-bottom">
-        <div class="line cross-left"></div>
-        <div class="line cross-right"></div>
-      </div>
+      <div class="line-horizontal line-bottom-left-h"></div>
+      <div class="line-vertical line-bottom-left-v"></div>
+      <div class="line-horizontal line-bottom-right-h"></div>
+      <div class="line-vertical line-bottom-right-v"></div>
     </div>
 
     <!-- Block 2 -->
     <div class="content-block">
-      <div class="edge-lines edge-top">
-        <div class="line cross-left"></div>
-        <div class="line cross-right"></div>
+      <div class="line-horizontal line-top-left-h"></div>
+      <div class="line-vertical line-top-left-v"></div>
+      <div class="line-horizontal line-top-right-h"></div>
+      <div class="line-vertical line-top-right-v"></div>
+
+      <div class="content-inner">
+        <h2>Mehr Raum</h2>
+        <p>Zwischen den Blöcken bleibt stets viel Platz. Das erzeugt Weite und lässt Raum für visuelle Tiefe – perfekt für generative Kunst.</p>
       </div>
 
-      <h2>Hintergrund erleben</h2>
-      <p>Die Glas-Effekt-Overlays sind leicht transparent, so entsteht ein eleganter Nebel über dem Frakta-Muster – ohne es zu verdecken.</p>
-
-      <div class="edge-lines edge-bottom">
-        <div class="line cross-left"></div>
-        <div class="line cross-right"></div>
-      </div>
+      <div class="line-horizontal line-bottom-left-h"></div>
+      <div class="line-vertical line-bottom-left-v"></div>
+      <div class="line-horizontal line-bottom-right-h"></div>
+      <div class="line-vertical line-bottom-right-v"></div>
     </div>
 
     <!-- Block 3 -->
     <div class="content-block">
-      <div class="edge-lines edge-top">
-        <div class="line cross-left"></div>
-        <div class="line cross-right"></div>
+      <div class="line-horizontal line-top-left-h"></div>
+      <div class="line-vertical line-top-left-v"></div>
+      <div class="line-horizontal line-top-right-h"></div>
+      <div class="line-vertical line-top-right-v"></div>
+
+      <div class="content-inner">
+        <h2>Kontakt</h2>
+        <p>Hier kannst du z. B. eine Karte oder ein Formular einbetten – oder einfach nur Raum lassen, um die Grafik zu genießen.</p>
+        <iframe class="content-embed" src="https://openstreetmap.org/export/embed.html?bbox=13.4,52.49,13.42,52.5&layer=mapnik" allowfullscreen></iframe>
       </div>
 
-      <h2>Kontakt & Karte</h2>
-      <p>Auch Karten und andere interaktive Inhalte lassen sich problemlos einfügen und wirken durch die transparente Darstellung sehr modern.</p>
-
-      <iframe
-        class="content-embed"
-        src="https://openstreetmap.org/export/embed.html?bbox=13.4,52.49,13.42,52.5&layer=mapnik"
-        allowfullscreen
-      ></iframe>
-
-      <div class="edge-lines edge-bottom">
-        <div class="line cross-left"></div>
-        <div class="line cross-right"></div>
-      </div>
+      <div class="line-horizontal line-bottom-left-h"></div>
+      <div class="line-vertical line-bottom-left-v"></div>
+      <div class="line-horizontal line-bottom-right-h"></div>
+      <div class="line-vertical line-bottom-right-v"></div>
     </div>
 
   </div>
