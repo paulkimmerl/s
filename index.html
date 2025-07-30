@@ -3,22 +3,24 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Überlapp-Scroll</title>
+  <title>Frakta Scrollseite</title>
   <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
     html, body {
-      margin: 0;
-      padding: 0;
       height: 100%;
-      overflow: hidden;
-      background: black;
       font-family: sans-serif;
+      background: black;
+      overflow: hidden;
     }
 
     .background {
       position: fixed;
-      width: 100%;
-      height: 100%;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
       z-index: 0;
+      pointer-events: auto;
     }
 
     .background iframe {
@@ -27,119 +29,196 @@
       border: none;
     }
 
-    .container {
-      position: relative;
+    .scroll-container {
+      position: absolute;
+      bottom: 0;
       width: 100%;
-      height: 100%;
-      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 2rem;
       z-index: 1;
+      pointer-events: none;
     }
 
-    .panel {
-      position: absolute;
+    .slide {
+      pointer-events: auto;
+      animation: slideIn 0.6s ease;
+    }
+
+    @keyframes slideIn {
+      from { opacity: 0; transform: translateY(50px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .blur-box {
       width: 100%;
-      height: 50%;
-      padding: 2rem;
-      box-sizing: border-box;
+      max-width: 900px;
       background: rgba(255, 255, 255, 0.1);
       backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
       color: white;
-      transition: transform 0.6s ease;
+      padding: 2rem;
+      position: relative;
     }
 
-    .panel.top {
+    .cross-holder {
+      position: absolute;
+      width: 100%;
+      height: 100%;
       top: 0;
+      left: 0;
+      pointer-events: none;
     }
 
-    .panel.bottom {
-      bottom: 0;
-      transform: translateY(100%);
+    .cross {
+      position: absolute;
+      width: 16px;
+      height: 16px;
     }
 
-    .panel.show {
-      transform: translateY(0%);
+    .cross::before, .cross::after {
+      content: '';
+      position: absolute;
+      background: white;
+      opacity: 0.3;
     }
+
+    .cross::before {
+      width: 100%;
+      height: 1px;
+      top: 50%;
+      left: 0;
+      transform: translateY(-50%);
+    }
+
+    .cross::after {
+      height: 100%;
+      width: 1px;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+    }
+
+    .top-left    { top: -8px; left: 2rem; }
+    .top-right   { top: -8px; right: 2rem; }
+    .bottom-left { bottom: -8px; left: 2rem; }
+    .bottom-right{ bottom: -8px; right: 2rem; }
 
     h1, h2, p {
-      margin: 0 0 1rem;
+      margin-bottom: 1rem;
     }
 
-    a {
-      color: white;
-      text-decoration: underline;
+    iframe.embed {
+      width: 100%;
+      height: 300px;
+      border: none;
+      margin-top: 1rem;
+    }
+
+    @media (max-width: 600px) {
+      .blur-box {
+        padding: 1.5rem;
+      }
+      .top-left, .bottom-left { left: 1rem; }
+      .top-right, .bottom-right { right: 1rem; }
     }
   </style>
 </head>
 <body>
-
   <div class="background">
     <iframe src="https://paulkimmerl.github.io/frakta/" allowfullscreen></iframe>
   </div>
 
-  <div class="container">
-    <div id="topPanel" class="panel top">
-      <h1>Willkommen</h1>
-      <p>Hi, ich bin Paul Kimmerl – interdisziplinärer Gestalter zwischen Code und Gestaltung.</p>
-    </div>
-    <div id="bottomPanel" class="panel bottom">
-      <h2>Frakta</h2>
-      <p>Ein interaktives WebGL-Experiment, das Gestaltung und Technologie kombiniert.</p>
-    </div>
+  <div class="scroll-container" id="scrollContainer">
+    <!-- Two panels will be injected here -->
   </div>
 
   <script>
-    const panels = [
+    const slidesData = [
       {
-        title: "Willkommen",
-        content: "Hi, ich bin Paul Kimmerl – interdisziplinärer Gestalter zwischen Code und Gestaltung."
+        title: "Frakta Projekt",
+        content: "Scrollbare Seite mit sichtbarem, interaktivem Hintergrund und Content nur unten.",
+        embed: "https://www.youtube.com/embed/dQw4w9WgXcQ"
       },
       {
-        title: "Frakta",
-        content: "Ein interaktives WebGL-Experiment, das Gestaltung und Technologie kombiniert."
+        title: "Hintergrund bleibt sichtbar",
+        content: "Der Blur-Block ist nur so hoch wie der Inhalt.",
+        embed: null
+      },
+      {
+        title: "Nur eine Box pro Seite",
+        content: "Mehr Raum für den Hintergrund, Interaktion bleibt möglich.",
+        embed: null
       },
       {
         title: "Kontakt",
-        content: "hello@paulkimmerl.de"
-      },
+        content: "hello@paulkimmerl.de",
+        embed: null
+      }
     ];
 
-    let index = 0;
-    const topPanel = document.getElementById("topPanel");
-    const bottomPanel = document.getElementById("bottomPanel");
+    const container = document.getElementById("scrollContainer");
+    let currentIndex = 0;
 
-    function updatePanels(direction) {
-      if (direction === "down" && index < panels.length - 1) {
-        index++;
-        topPanel.innerHTML = `<h2>${panels[index - 1].title}</h2><p>${panels[index - 1].content}</p>`;
-        bottomPanel.innerHTML = `<h2>${panels[index].title}</h2><p>${panels[index].content}</p>`;
-        bottomPanel.classList.add("show");
-        setTimeout(() => {
-          topPanel.innerHTML = bottomPanel.innerHTML;
-          bottomPanel.classList.remove("show");
-        }, 600);
-      } else if (direction === "up" && index > 0) {
-        index--;
-        bottomPanel.innerHTML = `<h2>${panels[index].title}</h2><p>${panels[index].content}</p>`;
-        bottomPanel.classList.add("show");
-        setTimeout(() => {
-          topPanel.innerHTML = bottomPanel.innerHTML;
-          bottomPanel.classList.remove("show");
-        }, 600);
+    function createSlide(data) {
+      const section = document.createElement("section");
+      section.className = "slide";
+
+      const box = document.createElement("div");
+      box.className = "blur-box";
+
+      const crosses = document.createElement("div");
+      crosses.className = "cross-holder";
+      ["top-left", "top-right", "bottom-left", "bottom-right"].forEach(pos => {
+        const cross = document.createElement("div");
+        cross.className = `cross ${pos}`;
+        crosses.appendChild(cross);
+      });
+
+      box.appendChild(crosses);
+
+      const title = document.createElement(data.embed ? "h1" : "h2");
+      title.textContent = data.title;
+      box.appendChild(title);
+
+      const para = document.createElement("p");
+      para.textContent = data.content;
+      box.appendChild(para);
+
+      if (data.embed) {
+        const iframe = document.createElement("iframe");
+        iframe.className = "embed";
+        iframe.src = data.embed;
+        iframe.allowFullscreen = true;
+        box.appendChild(iframe);
+      }
+
+      section.appendChild(box);
+      return section;
+    }
+
+    function renderSlides() {
+      container.innerHTML = "";
+      const prev = slidesData[currentIndex];
+      const next = slidesData[currentIndex + 1];
+      if (prev) container.appendChild(createSlide(prev));
+      if (next) container.appendChild(createSlide(next));
+    }
+
+    function scrollHandler(e) {
+      if (e.deltaY > 20 && currentIndex < slidesData.length - 2) {
+        currentIndex++;
+        renderSlides();
+      } else if (e.deltaY < -20 && currentIndex > 0) {
+        currentIndex--;
+        renderSlides();
       }
     }
 
-    let lastScroll = 0;
-    window.addEventListener("wheel", (e) => {
-      if (Math.abs(e.deltaY) < 10) return;
-      const now = Date.now();
-      if (now - lastScroll < 800) return; // throttle scroll
-      lastScroll = now;
-      if (e.deltaY > 0) {
-        updatePanels("down");
-      } else {
-        updatePanels("up");
-      }
-    });
+    window.addEventListener("wheel", scrollHandler, { passive: true });
+
+    renderSlides();
   </script>
 </body>
 </html>
