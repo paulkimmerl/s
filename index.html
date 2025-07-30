@@ -19,22 +19,32 @@
     }
 
     .scroll-container {
-      position: relative;
       height: 100vh;
       overflow-y: scroll;
       scroll-snap-type: y mandatory;
-      scroll-padding: 10vh;
-      padding-top: 10vh;
-      padding-bottom: 10vh;
     }
 
-    section.slide {
+    .slide {
+      height: 100vh;
+      position: relative;
       scroll-snap-align: start;
       display: flex;
-      align-items: flex-end;
-      justify-content: center;
-      margin-bottom: 10vh;
+      flex-direction: column;
+      justify-content: space-between;
       pointer-events: none;
+    }
+
+    .blur-box {
+      width: 100%;
+      max-width: 900px;
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      color: white;
+      padding: 2rem;
+      margin: 2rem auto;
+      position: relative;
+      pointer-events: auto;
     }
 
     .background {
@@ -51,18 +61,6 @@
       width: 100%;
       height: 100%;
       border: none;
-    }
-
-    .blur-box {
-      width: 100%;
-      max-width: 900px;
-      background: rgba(255, 255, 255, 0.1);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
-      color: white;
-      padding: 2rem;
-      position: relative;
-      pointer-events: auto;
     }
 
     .cross-holder {
@@ -147,7 +145,17 @@
           <div class="cross bottom-right"></div>
         </div>
         <h1>Frakta Projekt</h1>
-        <p>Scrollbare Seite mit sichtbarem, interaktivem Hintergrund und Content nur unten.</p>
+        <p>Scrollbare Seite mit sichtbarem, interaktivem Hintergrund und Content ganz oben.</p>
+      </div>
+
+      <div class="blur-box">
+        <div class="cross-holder">
+          <div class="cross top-left"></div>
+          <div class="cross top-right"></div>
+          <div class="cross bottom-left"></div>
+          <div class="cross bottom-right"></div>
+        </div>
+        <p>Content ganz unten im Viewport. Hier bleibt Platz für Frakta dazwischen.</p>
         <iframe class="embed" src="https://www.youtube.com/embed/dQw4w9WgXcQ"></iframe>
       </div>
     </section>
@@ -160,12 +168,10 @@
           <div class="cross bottom-left"></div>
           <div class="cross bottom-right"></div>
         </div>
-        <h2>Hintergrund bleibt sichtbar</h2>
-        <p>Der Blur-Block ist nur so hoch wie der Inhalt.</p>
+        <h2>Zweite Slide oben</h2>
+        <p>Der obere Block auf der nächsten Fullscreen-Seite.</p>
       </div>
-    </section>
 
-    <section class="slide">
       <div class="blur-box">
         <div class="cross-holder">
           <div class="cross top-left"></div>
@@ -173,8 +179,7 @@
           <div class="cross bottom-left"></div>
           <div class="cross bottom-right"></div>
         </div>
-        <h2>Nur eine Box pro Seite</h2>
-        <p>Mehr Raum für den Hintergrund, Interaktion bleibt möglich.</p>
+        <p>Und der untere Block der zweiten Seite.</p>
       </div>
     </section>
   </div>
