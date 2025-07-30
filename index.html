@@ -5,12 +5,36 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Frakta Scrollseite</title>
   <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
     html, body {
       height: 100%;
       font-family: sans-serif;
       background: black;
+      scroll-behavior: smooth;
       overflow: hidden;
+    }
+
+    .scroll-container {
+      position: relative;
+      height: 100vh;
+      overflow-y: scroll;
+      scroll-snap-type: y mandatory;
+      scroll-padding: 10vh;
+      padding-top: 10vh;
+      padding-bottom: 10vh;
+    }
+
+    section.slide {
+      scroll-snap-align: start;
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+      margin-bottom: 10vh;
+      pointer-events: none;
     }
 
     .background {
@@ -29,28 +53,6 @@
       border: none;
     }
 
-    .scroll-container {
-      position: absolute;
-      bottom: 0;
-      width: 100%;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 2rem;
-      z-index: 1;
-      pointer-events: none;
-    }
-
-    .slide {
-      pointer-events: auto;
-      animation: slideIn 0.6s ease;
-    }
-
-    @keyframes slideIn {
-      from { opacity: 0; transform: translateY(50px); }
-      to   { opacity: 1; transform: translateY(0); }
-    }
-
     .blur-box {
       width: 100%;
       max-width: 900px;
@@ -60,6 +62,7 @@
       color: white;
       padding: 2rem;
       position: relative;
+      pointer-events: auto;
     }
 
     .cross-holder {
@@ -120,8 +123,12 @@
       .blur-box {
         padding: 1.5rem;
       }
-      .top-left, .bottom-left { left: 1rem; }
-      .top-right, .bottom-right { right: 1rem; }
+      .top-left, .bottom-left {
+        left: 1rem;
+      }
+      .top-right, .bottom-right {
+        right: 1rem;
+      }
     }
   </style>
 </head>
@@ -130,95 +137,46 @@
     <iframe src="https://paulkimmerl.github.io/frakta/" allowfullscreen></iframe>
   </div>
 
-  <div class="scroll-container" id="scrollContainer">
-    <!-- Two panels will be injected here -->
+  <div class="scroll-container">
+    <section class="slide">
+      <div class="blur-box">
+        <div class="cross-holder">
+          <div class="cross top-left"></div>
+          <div class="cross top-right"></div>
+          <div class="cross bottom-left"></div>
+          <div class="cross bottom-right"></div>
+        </div>
+        <h1>Frakta Projekt</h1>
+        <p>Scrollbare Seite mit sichtbarem, interaktivem Hintergrund und Content nur unten.</p>
+        <iframe class="embed" src="https://www.youtube.com/embed/dQw4w9WgXcQ"></iframe>
+      </div>
+    </section>
+
+    <section class="slide">
+      <div class="blur-box">
+        <div class="cross-holder">
+          <div class="cross top-left"></div>
+          <div class="cross top-right"></div>
+          <div class="cross bottom-left"></div>
+          <div class="cross bottom-right"></div>
+        </div>
+        <h2>Hintergrund bleibt sichtbar</h2>
+        <p>Der Blur-Block ist nur so hoch wie der Inhalt.</p>
+      </div>
+    </section>
+
+    <section class="slide">
+      <div class="blur-box">
+        <div class="cross-holder">
+          <div class="cross top-left"></div>
+          <div class="cross top-right"></div>
+          <div class="cross bottom-left"></div>
+          <div class="cross bottom-right"></div>
+        </div>
+        <h2>Nur eine Box pro Seite</h2>
+        <p>Mehr Raum für den Hintergrund, Interaktion bleibt möglich.</p>
+      </div>
+    </section>
   </div>
-
-  <script>
-    const slidesData = [
-      {
-        title: "Frakta Projekt",
-        content: "Scrollbare Seite mit sichtbarem, interaktivem Hintergrund und Content nur unten.",
-        embed: "https://www.youtube.com/embed/dQw4w9WgXcQ"
-      },
-      {
-        title: "Hintergrund bleibt sichtbar",
-        content: "Der Blur-Block ist nur so hoch wie der Inhalt.",
-        embed: null
-      },
-      {
-        title: "Nur eine Box pro Seite",
-        content: "Mehr Raum für den Hintergrund, Interaktion bleibt möglich.",
-        embed: null
-      },
-      {
-        title: "Kontakt",
-        content: "hello@paulkimmerl.de",
-        embed: null
-      }
-    ];
-
-    const container = document.getElementById("scrollContainer");
-    let currentIndex = 0;
-
-    function createSlide(data) {
-      const section = document.createElement("section");
-      section.className = "slide";
-
-      const box = document.createElement("div");
-      box.className = "blur-box";
-
-      const crosses = document.createElement("div");
-      crosses.className = "cross-holder";
-      ["top-left", "top-right", "bottom-left", "bottom-right"].forEach(pos => {
-        const cross = document.createElement("div");
-        cross.className = `cross ${pos}`;
-        crosses.appendChild(cross);
-      });
-
-      box.appendChild(crosses);
-
-      const title = document.createElement(data.embed ? "h1" : "h2");
-      title.textContent = data.title;
-      box.appendChild(title);
-
-      const para = document.createElement("p");
-      para.textContent = data.content;
-      box.appendChild(para);
-
-      if (data.embed) {
-        const iframe = document.createElement("iframe");
-        iframe.className = "embed";
-        iframe.src = data.embed;
-        iframe.allowFullscreen = true;
-        box.appendChild(iframe);
-      }
-
-      section.appendChild(box);
-      return section;
-    }
-
-    function renderSlides() {
-      container.innerHTML = "";
-      const prev = slidesData[currentIndex];
-      const next = slidesData[currentIndex + 1];
-      if (prev) container.appendChild(createSlide(prev));
-      if (next) container.appendChild(createSlide(next));
-    }
-
-    function scrollHandler(e) {
-      if (e.deltaY > 20 && currentIndex < slidesData.length - 2) {
-        currentIndex++;
-        renderSlides();
-      } else if (e.deltaY < -20 && currentIndex > 0) {
-        currentIndex--;
-        renderSlides();
-      }
-    }
-
-    window.addEventListener("wheel", scrollHandler, { passive: true });
-
-    renderSlides();
-  </script>
 </body>
 </html>
