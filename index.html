@@ -3,46 +3,22 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Frakta Scrollseite</title>
+  <title>Überlapp-Scroll</title>
   <style>
-    * {
+    html, body {
       margin: 0;
       padding: 0;
-      box-sizing: border-box;
-    }
-    html, body {
       height: 100%;
-      font-family: sans-serif;
-      background: black;
-      scroll-behavior: smooth;
       overflow: hidden;
-    }
-
-    .scroll-container {
-      height: 100vh;
-      overflow-y: scroll;
-      scroll-snap-type: y mandatory;
-    }
-
-    section.slide {
-      height: 100vh;
-      display: flex;
-      align-items: flex-end;
-      justify-content: center;
-      scroll-snap-align: start;
-      position: relative;
-      z-index: 1;
-      pointer-events: none;
+      background: black;
+      font-family: sans-serif;
     }
 
     .background {
       position: fixed;
-      top: 0;
-      left: 0;
-      width: 100vw;
-      height: 100vh;
+      width: 100%;
+      height: 100%;
       z-index: 0;
-      pointer-events: auto;
     }
 
     .background iframe {
@@ -51,134 +27,119 @@
       border: none;
     }
 
-    .blur-box {
+    .container {
+      position: relative;
       width: 100%;
-      max-width: 900px;
+      height: 100%;
+      overflow: hidden;
+      z-index: 1;
+    }
+
+    .panel {
+      position: absolute;
+      width: 100%;
+      height: 50%;
+      padding: 2rem;
+      box-sizing: border-box;
       background: rgba(255, 255, 255, 0.1);
       backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
       color: white;
-      padding: 2rem;
-      margin-bottom: 2rem;
-      position: relative;
-      pointer-events: auto;
+      transition: transform 0.6s ease;
     }
 
-    .cross-holder {
-      position: absolute;
-      width: 100%;
-      height: 100%;
+    .panel.top {
       top: 0;
-      left: 0;
-      pointer-events: none;
     }
 
-    .cross {
-      position: absolute;
-      width: 16px;
-      height: 16px;
+    .panel.bottom {
+      bottom: 0;
+      transform: translateY(100%);
     }
 
-    .cross::before, .cross::after {
-      content: '';
-      position: absolute;
-      background: white;
-      opacity: 0.3;
+    .panel.show {
+      transform: translateY(0%);
     }
-
-    .cross::before {
-      width: 100%;
-      height: 1px;
-      top: 50%;
-      left: 0;
-      transform: translateY(-50%);
-    }
-
-    .cross::after {
-      height: 100%;
-      width: 1px;
-      top: 0;
-      left: 50%;
-      transform: translateX(-50%);
-    }
-
-    .top-left    { top: -8px; left: 2rem; }
-    .top-right   { top: -8px; right: 2rem; }
-    .bottom-left { bottom: -8px; left: 2rem; }
-    .bottom-right{ bottom: -8px; right: 2rem; }
 
     h1, h2, p {
-      margin-bottom: 1rem;
+      margin: 0 0 1rem;
     }
 
-    iframe.embed {
-      width: 100%;
-      height: 300px;
-      border: none;
-      margin-top: 1rem;
-    }
-
-    @media (max-width: 600px) {
-      .blur-box {
-        padding: 1.5rem;
-      }
-      .top-left, .bottom-left {
-        left: 1rem;
-      }
-      .top-right, .bottom-right {
-        right: 1rem;
-      }
+    a {
+      color: white;
+      text-decoration: underline;
     }
   </style>
 </head>
 <body>
+
   <div class="background">
     <iframe src="https://paulkimmerl.github.io/frakta/" allowfullscreen></iframe>
   </div>
 
-  <div class="scroll-container">
-    <section class="slide">
-      <div class="blur-box">
-        <div class="cross-holder">
-          <div class="cross top-left"></div>
-          <div class="cross top-right"></div>
-          <div class="cross bottom-left"></div>
-          <div class="cross bottom-right"></div>
-        </div>
-        <h1>Willkommen</h1>
-        <p>Hi, ich bin Paul Kimmerl – interdisziplinärer Gestalter zwischen Code und Gestaltung.</p>
-        <p>Ich entwickle digitale Erlebnisse mit einem starken Fokus auf Interaktivität und Gestaltung – von konzeptionellen Studien bis zu konkreten Anwendungen.</p>
-      </div>
-    </section>
-
-    <section class="slide">
-      <div class="blur-box">
-        <div class="cross-holder">
-          <div class="cross top-left"></div>
-          <div class="cross top-right"></div>
-          <div class="cross bottom-left"></div>
-          <div class="cross bottom-right"></div>
-        </div>
-        <h2>Portfolio</h2>
-        <p>Ich arbeite mit generativem Design, WebGL, interaktiven Interfaces, AI und datengestützter Gestaltung. Meine Arbeiten verbinden Designästhetik mit technischer Präzision.</p>
-        <p>Schau dir mein <a href="https://paulkimmerl.github.io/frakta/" target="_blank" style="color:#fff; text-decoration:underline;">Frakta Projekt</a> an – ein interaktives WebGL-Experiment.</p>
-      </div>
-    </section>
-
-    <section class="slide">
-      <div class="blur-box">
-        <div class="cross-holder">
-          <div class="cross top-left"></div>
-          <div class="cross top-right"></div>
-          <div class="cross bottom-left"></div>
-          <div class="cross bottom-right"></div>
-        </div>
-        <h2>Kontakt</h2>
-        <p>Mehr Infos oder Interesse an einer Zusammenarbeit?</p>
-        <p>Mail: <a href="mailto:hello@paulkimmerl.de" style="color:#fff; text-decoration:underline;">hello@paulkimmerl.de</a></p>
-        <p>Weitere Projekte findest du auf meinem <a href="https://github.com/paulkimmerl" target="_blank" style="color:#fff; text-decoration:underline;">GitHub-Profil</a>.</p>
-      </div>
-    </section>
+  <div class="container">
+    <div id="topPanel" class="panel top">
+      <h1>Willkommen</h1>
+      <p>Hi, ich bin Paul Kimmerl – interdisziplinärer Gestalter zwischen Code und Gestaltung.</p>
+    </div>
+    <div id="bottomPanel" class="panel bottom">
+      <h2>Frakta</h2>
+      <p>Ein interaktives WebGL-Experiment, das Gestaltung und Technologie kombiniert.</p>
+    </div>
   </div>
+
+  <script>
+    const panels = [
+      {
+        title: "Willkommen",
+        content: "Hi, ich bin Paul Kimmerl – interdisziplinärer Gestalter zwischen Code und Gestaltung."
+      },
+      {
+        title: "Frakta",
+        content: "Ein interaktives WebGL-Experiment, das Gestaltung und Technologie kombiniert."
+      },
+      {
+        title: "Kontakt",
+        content: "hello@paulkimmerl.de"
+      },
+    ];
+
+    let index = 0;
+    const topPanel = document.getElementById("topPanel");
+    const bottomPanel = document.getElementById("bottomPanel");
+
+    function updatePanels(direction) {
+      if (direction === "down" && index < panels.length - 1) {
+        index++;
+        topPanel.innerHTML = `<h2>${panels[index - 1].title}</h2><p>${panels[index - 1].content}</p>`;
+        bottomPanel.innerHTML = `<h2>${panels[index].title}</h2><p>${panels[index].content}</p>`;
+        bottomPanel.classList.add("show");
+        setTimeout(() => {
+          topPanel.innerHTML = bottomPanel.innerHTML;
+          bottomPanel.classList.remove("show");
+        }, 600);
+      } else if (direction === "up" && index > 0) {
+        index--;
+        bottomPanel.innerHTML = `<h2>${panels[index].title}</h2><p>${panels[index].content}</p>`;
+        bottomPanel.classList.add("show");
+        setTimeout(() => {
+          topPanel.innerHTML = bottomPanel.innerHTML;
+          bottomPanel.classList.remove("show");
+        }, 600);
+      }
+    }
+
+    let lastScroll = 0;
+    window.addEventListener("wheel", (e) => {
+      if (Math.abs(e.deltaY) < 10) return;
+      const now = Date.now();
+      if (now - lastScroll < 800) return; // throttle scroll
+      lastScroll = now;
+      if (e.deltaY > 0) {
+        updatePanels("down");
+      } else {
+        updatePanels("up");
+      }
+    });
+  </script>
 </body>
 </html>
